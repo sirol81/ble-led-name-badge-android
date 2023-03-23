@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,6 +13,8 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.showKeyboard
@@ -35,6 +38,7 @@ class MessageActivity : AppCompatActivity() {
     private val speed: Spinner by bindView(R.id.speed)
     private val mode: Spinner by bindView(R.id.mode)
     private val send: Button by bindView(R.id.send_button)
+    private val webView: WebView by bindView(R.id.webview)
 
     private val presenter by lazy { MessagePresenter() }
 
@@ -45,13 +49,21 @@ class MessageActivity : AppCompatActivity() {
         val spinnerItem = android.R.layout.simple_spinner_dropdown_item
         speed.adapter = ArrayAdapter<String>(this, spinnerItem, Speed.values().mapIndexed { index, _ -> (index + 1).toString() })
         mode.adapter = ArrayAdapter<String>(this, spinnerItem, Mode.values().map { getString(it.stringResId) })
+        speed.setSelection(7)
+
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = WebViewClient()
+        webView.loadUrl("www.google.com")
 
         send.setOnClickListener {
             // Easter egg
             if (content.text.isEmpty()) {
-                presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
+                presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()))
             } else {
-                presenter.sendMessage(this, convertToDeviceDataModel())
+                presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()))
             }
         }
     }
@@ -59,8 +71,8 @@ class MessageActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         prepareForScan()
-        content.requestFocus()
-        content.showKeyboard()
+        //content.requestFocus()
+        //content.showKeyboard()
     }
 
     override fun onPause() {
@@ -90,8 +102,8 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun convertToDeviceDataModel(): DataToSend {
-        return DataToSend(listOf(Message(content.text.trim().toString(), flash.isChecked, marquee.isChecked, Speed.values()[speed.selectedItemPosition], Mode.values()[mode.selectedItemPosition])))
+    private fun convertToDeviceDataModel(text : String): DataToSend {
+        return DataToSend(listOf(Message(text, flash.isChecked, marquee.isChecked, Speed.values()[speed.selectedItemPosition], Mode.values()[mode.selectedItemPosition])))
     }
 
     private fun prepareForScan() {
