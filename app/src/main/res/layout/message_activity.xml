@@ -16,7 +16,7 @@
 
     <EditText
         android:id="@+id/text_to_send"
-        android:layout_width="0dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:inputType="text"
@@ -28,10 +28,10 @@
     <Spinner
         android:id="@+id/speed"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/mode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_to_send"
+        app:layout_constraintTop_toBottomOf="@+id/webview" />
 
     <Spinner
         android:id="@+id/mode"
