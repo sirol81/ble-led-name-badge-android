@@ -2,7 +2,7 @@
 
 An Android app to control an LED Name Badge
 
-Some minor edits to update referencies
+Some minor edits to update references to a working project with AS2022EE
 
 Major edit consists in loop to update more than one badge, based on their unique addresses
 
