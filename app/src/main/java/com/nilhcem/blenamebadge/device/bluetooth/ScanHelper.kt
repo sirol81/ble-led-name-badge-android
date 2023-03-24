@@ -10,7 +10,7 @@ import no.nordicsemi.android.support.v18.scanner.*
 class ScanHelper {
 
     companion object {
-        private val SCAN_TIMEOUT_MS = 10_000L
+        private val SCAN_TIMEOUT_MS = 20_000L
     }
 
     private var isScanning = false

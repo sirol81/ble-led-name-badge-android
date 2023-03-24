@@ -12,6 +12,9 @@ import com.nilhcem.blenamebadge.device.model.DataToSend
 
 class MessagePresenter {
 
+    companion object {
+        private val SLEEP_TIME = 800L
+    }
     private val scanHelper = ScanHelper()
     private val gattClient = GattClient()
 
@@ -19,13 +22,13 @@ class MessagePresenter {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
         val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses)
+        sendBytes(context, byteData, addresses, SLEEP_TIME)
     }
 
     fun sendBitmap(context: Context, bmp: Bitmap) {
         val byteData = DataToByteArrayConverter.convertBitmap(bmp)
         val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses)
+        sendBytes(context, byteData, addresses, SLEEP_TIME)
     }
 
     fun onPause() {
@@ -33,7 +36,7 @@ class MessagePresenter {
         gattClient.stopClient()
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses : MutableList<String>) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses : MutableList<String>, sleep : Long) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
 
         scanHelper.startLeScan { device ->
@@ -50,11 +53,11 @@ class MessagePresenter {
                             Timber.i { "Data sent to $device" }
                             gattClient.stopClient()
                             addresses.remove(device.address)
-                            Thread.sleep(750)
+                            Thread.sleep(sleep)
                             if (addresses.isNotEmpty())
                             {
                                 Timber.e { addresses.joinToString(",") }
-                                sendBytes(context, byteData, addresses)
+                                sendBytes(context, byteData, addresses, sleep)
                             }
                         }
                     }

@@ -11,6 +11,10 @@ import java.util.*
 
 class GattClient {
 
+    companion object {
+        private val WRITE_TIMEOUT_MS = 50L
+    }
+
     private var bluetoothManager: BluetoothManager? = null
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
@@ -26,8 +30,8 @@ class GattClient {
                 gatt.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Timber.i { "Disconnected from GATT client" }
-                stopClient()
-                onConnectedListener?.invoke(false)
+                //stopClient()
+                //onConnectedListener?.invoke(false)
             }
         }
 
@@ -43,7 +47,7 @@ class GattClient {
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             Timber.i { "onCharacteristicWrite" }
-            Thread.sleep(100)
+            Thread.sleep(WRITE_TIMEOUT_MS)
             writeNextData()
         }
     }
