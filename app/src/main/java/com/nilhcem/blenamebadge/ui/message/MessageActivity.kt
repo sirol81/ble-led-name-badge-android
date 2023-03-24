@@ -37,10 +37,11 @@ class MessageActivity : AppCompatActivity() {
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
     private val mode: Spinner by bindView(R.id.mode)
-    private val send_BF: Button by bindView(R.id.send_button_BF)
-    private val send_89: Button by bindView(R.id.send_button_89)
-    private val send_3B: Button by bindView(R.id.send_button_3B)
-    private val send_CD: Button by bindView(R.id.send_button_CD)
+    private val send: Button by bindView(R.id.send_button_ALL)
+    val send_BF: Button by bindView(R.id.send_button_BF)
+    val send_89: Button by bindView(R.id.send_button_89)
+    val send_3B: Button by bindView(R.id.send_button_3B)
+    val send_CD: Button by bindView(R.id.send_button_CD)
     private val webView: WebView by bindView(R.id.webview)
 
     private val presenter by lazy { MessagePresenter() }
@@ -59,15 +60,26 @@ class MessageActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.loadUrl("www.google.com")
 
-        send_BF.setOnClickListener {
+        send.setOnClickListener {
             // Easter egg
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
-                presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()))
-            } else {
-                presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()))
             }
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+        }
+
+        send_BF.setOnClickListener {
+            send_BF.isEnabled = false
+        }
+        send_89.setOnClickListener {
+            send_89.isEnabled = false
+        }
+        send_3B.setOnClickListener {
+            send_3B.isEnabled = false
+        }
+        send_CD.setOnClickListener {
+            send_CD.isEnabled = false
         }
     }
 

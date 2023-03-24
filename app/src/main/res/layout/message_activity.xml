@@ -28,7 +28,7 @@
     <Spinner
         android:id="@+id/speed"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_to_send"
         app:layout_constraintTop_toBottomOf="@+id/webview" />
@@ -60,6 +60,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/flash"
         app:layout_constraintTop_toBottomOf="@+id/mode" />
+
+    <Button
+        android:id="@+id/send_button_ALL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="@string/send_button"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_to_send"
+        app:layout_constraintTop_toBottomOf="@+id/webview"
+        app:layout_constraintBottom_toTopOf="@+id/send_button_CD"/>
 
     <Button
         android:id="@+id/send_button_BF"

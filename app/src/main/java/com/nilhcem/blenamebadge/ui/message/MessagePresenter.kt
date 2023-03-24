@@ -2,7 +2,9 @@ package com.nilhcem.blenamebadge.ui.message
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.widget.Button
 import android.widget.Toast
+import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.core.utils.ByteArrayUtils
 import com.nilhcem.blenamebadge.device.DataToByteArrayConverter
@@ -13,30 +15,29 @@ import com.nilhcem.blenamebadge.device.model.DataToSend
 class MessagePresenter {
 
     companion object {
-        private val SLEEP_TIME = 500L
+        private val SLEEP_TIME = 800L
     }
     private val scanHelper = ScanHelper()
     private val gattClient = GattClient()
 
-    fun sendMessage(context: Context, dataToSend: DataToSend) {
+    fun sendMessage(context: Context, dataToSend: DataToSend, vararg buttons: Button) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
         val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses, SLEEP_TIME)
+        sendBytes(context, byteData, addresses, SLEEP_TIME, buttons)
     }
 
-    fun sendBitmap(context: Context, bmp: Bitmap) {
+    /*fun sendBitmap(context: Context, bmp: Bitmap) {
         val byteData = DataToByteArrayConverter.convertBitmap(bmp)
-        val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses, SLEEP_TIME)
-    }
+        sendBytes(context, byteData)
+    }*/
 
     fun onPause() {
         scanHelper.stopLeScan()
         gattClient.stopClient()
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses : MutableList<String>, sleep : Long) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses : MutableList<String>, sleep : Long, buttons: Array<out Button>) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
 
         scanHelper.startLeScan { device ->
@@ -52,12 +53,30 @@ class MessagePresenter {
                         gattClient.writeDataStart(byteData) {
                             Timber.i { "Data sent to $device" }
                             gattClient.stopClient()
-                            addresses.remove(device.address)
+                            var sendBF : Button = buttons[0]
+                            var send89 : Button = buttons[0]
+                            var send3B : Button = buttons[0]
+                            var sendCD : Button = buttons[0]
+                            for (b in buttons)
+                            {
+                                when (b.id) {
+                                    R.id.send_button_BF -> sendBF = b
+                                    R.id.send_button_89 -> send89 = b
+                                    R.id.send_button_3B -> send3B = b
+                                    R.id.send_button_CD -> sendCD = b
+                                }
+                            }
+                            /*when (device.address) {
+                                "38:3B:26:EC:64:BF" -> sendBF.isEnabled = false
+                                "38:3B:26:EC:64:89" -> send89.isEnabled = false
+                                "38:3B:26:EC:64:3B" -> send3B.isEnabled = false
+                                "38:3B:26:EC:64:CD" -> sendCD.isEnabled = false
+                            }*/
                             Thread.sleep(sleep)
                             if (addresses.isNotEmpty())
                             {
                                 Timber.e { addresses.joinToString(",") }
-                                sendBytes(context, byteData, addresses, sleep)
+                                sendBytes(context, byteData, addresses, sleep, buttons)
                             }
                         }
                     }
