@@ -2,8 +2,10 @@
 
 An Android app to control an LED Name Badge
 
-![Screenshot](https://raw.githubusercontent.com/Nilhcem/ble-led-name-badge-android/master/preview.jpg)
+Some minor edits to update references to a working project with AS2022EE
+
+Major edit consists in loop to update more than one badge, based on their unique addresses
 
 
-Blog post:  
+Original Blog post:  
 [http://nilhcem.com/iot/reverse-engineering-bluetooth-led-name-badge](http://nilhcem.com/iot/reverse-engineering-bluetooth-led-name-badge)
