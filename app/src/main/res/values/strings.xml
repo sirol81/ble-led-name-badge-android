@@ -19,5 +19,8 @@
     <string name="mode_picture">Picture</string>
     <string name="mode_animation">Animation</string>
     <string name="mode_laser">Laser</string>
-    <string name="send_button">SEND CLIPBOARD TO BT DEVICES</string>
+    <string name="send_button_BF">1</string>
+    <string name="send_button_89">2</string>
+    <string name="send_button_3B">3</string>
+    <string name="send_button_CD">4</string>
 </resources>

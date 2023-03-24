@@ -62,14 +62,50 @@
         app:layout_constraintTop_toBottomOf="@+id/mode" />
 
     <Button
-        android:id="@+id/send_button"
-        android:layout_width="match_parent"
+        android:id="@+id/send_button_BF"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:paddingLeft="42dp"
-        android:paddingRight="42dp"
-        android:text="@string/send_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/send_button_BF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/send_button_89"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flash" />
+
+    <Button
+        android:id="@+id/send_button_89"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/send_button_89"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/send_button_3B"
+        app:layout_constraintStart_toEndOf="@+id/send_button_BF"
+        app:layout_constraintTop_toBottomOf="@+id/flash" />
+
+    <Button
+        android:id="@+id/send_button_3B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/send_button_3B"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/send_button_CD"
+        app:layout_constraintStart_toEndOf="@+id/send_button_89"
+        app:layout_constraintTop_toBottomOf="@+id/flash" />
+
+    <Button
+        android:id="@+id/send_button_CD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/send_button_CD"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/send_button_3B"
         app:layout_constraintTop_toBottomOf="@+id/flash" />
 </android.support.constraint.ConstraintLayout>

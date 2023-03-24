@@ -37,7 +37,10 @@ class MessageActivity : AppCompatActivity() {
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
     private val mode: Spinner by bindView(R.id.mode)
-    private val send: Button by bindView(R.id.send_button)
+    private val send_BF: Button by bindView(R.id.send_button_BF)
+    private val send_89: Button by bindView(R.id.send_button_89)
+    private val send_3B: Button by bindView(R.id.send_button_3B)
+    private val send_CD: Button by bindView(R.id.send_button_CD)
     private val webView: WebView by bindView(R.id.webview)
 
     private val presenter by lazy { MessagePresenter() }
@@ -56,7 +59,7 @@ class MessageActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.loadUrl("www.google.com")
 
-        send.setOnClickListener {
+        send_BF.setOnClickListener {
             // Easter egg
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
