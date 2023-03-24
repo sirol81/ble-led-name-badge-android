@@ -13,7 +13,7 @@ import com.nilhcem.blenamebadge.device.model.DataToSend
 class MessagePresenter {
 
     companion object {
-        private val SLEEP_TIME = 800L
+        private val SLEEP_TIME = 500L
     }
     private val scanHelper = ScanHelper()
     private val gattClient = GattClient()
@@ -46,7 +46,7 @@ class MessagePresenter {
             } else {
                 Timber.e { "Device found: $device" }
                 Toast.makeText(context, "BT found $device" , Toast.LENGTH_SHORT).show()
-
+                scanHelper.stopLeScan()
                 gattClient.startClient(context, device.address) { onConnected ->
                     if (onConnected) {
                         gattClient.writeDataStart(byteData) {

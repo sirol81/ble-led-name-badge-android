@@ -12,7 +12,7 @@ import java.util.*
 class GattClient {
 
     companion object {
-        private val WRITE_TIMEOUT_MS = 50L
+        private val WRITE_TIMEOUT_MS = 25L
     }
 
     private var bluetoothManager: BluetoothManager? = null
