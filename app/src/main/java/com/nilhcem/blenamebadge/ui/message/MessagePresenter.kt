@@ -1,7 +1,7 @@
 package com.nilhcem.blenamebadge.ui.message
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.graphics.Bitmap
 import android.widget.Button
 import android.widget.Toast
 import com.nilhcem.blenamebadge.R
@@ -48,6 +48,7 @@ class MessagePresenter {
                 Timber.e { "Device found: $device" }
                 Toast.makeText(context, "BT found $device" , Toast.LENGTH_SHORT).show()
                 scanHelper.stopLeScan()
+                val activity : MessageActivity = context as MessageActivity
                 gattClient.startClient(context, device.address) { onConnected ->
                     if (onConnected) {
                         gattClient.writeDataStart(byteData) {
@@ -66,12 +67,12 @@ class MessagePresenter {
                                     R.id.send_button_CD -> sendCD = b
                                 }
                             }
-                            /*when (device.address) {
-                                "38:3B:26:EC:64:BF" -> sendBF.isEnabled = false
-                                "38:3B:26:EC:64:89" -> send89.isEnabled = false
-                                "38:3B:26:EC:64:3B" -> send3B.isEnabled = false
-                                "38:3B:26:EC:64:CD" -> sendCD.isEnabled = false
-                            }*/
+                            when (device.address) {
+                                "38:3B:26:EC:64:BF" -> activity.runOnUiThread{ sendBF.isEnabled = false }
+                                "38:3B:26:EC:64:89" -> activity.runOnUiThread{ send89.isEnabled = false }
+                                "38:3B:26:EC:64:3B" -> activity.runOnUiThread{ send3B.isEnabled = false }
+                                "38:3B:26:EC:64:CD" -> activity.runOnUiThread{ sendCD.isEnabled = false }
+                            }
                             Thread.sleep(sleep)
                             if (addresses.isNotEmpty())
                             {
