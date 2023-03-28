@@ -58,7 +58,7 @@ class MessageActivity : AppCompatActivity() {
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("www.google.com")
+        webView.loadUrl("192.168.1.2/results")
 
         send.setOnClickListener {
             send_BF.isEnabled = true
@@ -77,28 +77,28 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_89)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_3B)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_CD)
         }
     }
 

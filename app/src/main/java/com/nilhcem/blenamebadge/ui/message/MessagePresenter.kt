@@ -74,7 +74,7 @@ class MessagePresenter {
                                 "38:3B:26:EC:64:CD" -> activity.runOnUiThread{ sendCD.isEnabled = false }
                             }
                             Thread.sleep(sleep)
-                            if (addresses.isNotEmpty())
+                            if (addresses.isNotEmpty() && buttons.count() > 1)
                             {
                                 Timber.e { addresses.joinToString(",") }
                                 sendBytes(context, byteData, addresses, sleep, buttons)
