@@ -61,7 +61,10 @@ class MessageActivity : AppCompatActivity() {
         webView.loadUrl("www.google.com")
 
         send.setOnClickListener {
-            // Easter egg
+            send_BF.isEnabled = true
+            send_89.isEnabled = true
+            send_3B.isEnabled = true
+            send_CD.isEnabled = true
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
@@ -70,16 +73,32 @@ class MessageActivity : AppCompatActivity() {
         }
 
         send_BF.setOnClickListener {
-            send_BF.isEnabled = false
+            if (content.text.isEmpty()) {
+                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
+            }
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
         }
         send_89.setOnClickListener {
-            send_89.isEnabled = false
+            if (content.text.isEmpty()) {
+                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
+            }
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
         }
         send_3B.setOnClickListener {
-            send_3B.isEnabled = false
+            if (content.text.isEmpty()) {
+                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
+            }
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
         }
         send_CD.setOnClickListener {
-            send_CD.isEnabled = false
+            if (content.text.isEmpty()) {
+                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
+                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
+            }
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
         }
     }
 
