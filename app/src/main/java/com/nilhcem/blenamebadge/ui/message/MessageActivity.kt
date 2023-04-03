@@ -43,6 +43,7 @@ class MessageActivity : AppCompatActivity() {
     val send_CD: Button by bindView(R.id.send_button_CD)
 
     private val presenter by lazy { MessagePresenter() }
+    lateinit var clipboardManager : ClipboardManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +58,7 @@ class MessageActivity : AppCompatActivity() {
         wait.setSelection(0)//sleep500
         timeout.setSelection(1)//timeout10000
 
-        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         send.setOnClickListener {
             send_BF.isEnabled = true
@@ -104,8 +105,9 @@ class MessageActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         prepareForScan()
-        //content.requestFocus()
+        content.requestFocus()
         content.hideKeyboard()
+        content.setText("")
     }
 
     override fun onPause() {
