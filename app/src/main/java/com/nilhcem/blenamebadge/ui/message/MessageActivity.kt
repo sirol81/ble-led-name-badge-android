@@ -42,7 +42,6 @@ class MessageActivity : AppCompatActivity() {
     val send_89: Button by bindView(R.id.send_button_89)
     val send_3B: Button by bindView(R.id.send_button_3B)
     val send_CD: Button by bindView(R.id.send_button_CD)
-    private val webView: WebView by bindView(R.id.webview)
 
     private val presenter by lazy { MessagePresenter() }
 
@@ -56,9 +55,6 @@ class MessageActivity : AppCompatActivity() {
         speed.setSelection(7)
 
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        webView.settings.javaScriptEnabled = true
-        webView.webViewClient = WebViewClient()
-        webView.loadUrl("192.168.1.2/results")
 
         send.setOnClickListener {
             send_BF.isEnabled = true

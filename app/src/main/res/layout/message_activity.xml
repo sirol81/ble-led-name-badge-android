@@ -5,47 +5,79 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="545dp"
+    <TextView
+        android:id="@+id/text_to_send_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/text_to_send"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/text_to_send"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="4dp"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/webview" />
+        app:layout_constraintTop_toBottomOf="@+id/text_to_send_label" />
+
+    <TextView
+        android:id="@+id/speed_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/speed"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
 
     <Spinner
         android:id="@+id/speed"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_to_send"
-        app:layout_constraintTop_toBottomOf="@+id/webview" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/speed_label" />
+
+    <TextView
+        android:id="@+id/mode_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/mode"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/speed" />
 
     <Spinner
         android:id="@+id/mode"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/speed"
-        app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mode_label" />
 
     <CheckBox
         android:id="@+id/flash"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/flash"
         app:layout_constraintEnd_toStartOf="@+id/marquee"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +86,8 @@
     <CheckBox
         android:id="@+id/marquee"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/marquee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/flash"
@@ -63,16 +95,17 @@
 
     <Button
         android:id="@+id/send_button_ALL"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="42dp"
+        android:paddingRight="42dp"
         android:text="@string/send_button"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_to_send"
-        app:layout_constraintTop_toBottomOf="@+id/webview"
-        app:layout_constraintBottom_toTopOf="@+id/send_button_CD"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flash"
+        />
 
     <Button
         android:id="@+id/send_button_BF"
@@ -84,7 +117,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/send_button_89"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flash" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_ALL" />
 
     <Button
         android:id="@+id/send_button_89"
@@ -96,7 +129,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/send_button_3B"
         app:layout_constraintStart_toEndOf="@+id/send_button_BF"
-        app:layout_constraintTop_toBottomOf="@+id/flash" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_ALL" />
 
     <Button
         android:id="@+id/send_button_3B"
@@ -108,7 +141,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/send_button_CD"
         app:layout_constraintStart_toEndOf="@+id/send_button_89"
-        app:layout_constraintTop_toBottomOf="@+id/flash" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_ALL" />
 
     <Button
         android:id="@+id/send_button_CD"
@@ -120,5 +153,5 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/send_button_3B"
-        app:layout_constraintTop_toBottomOf="@+id/flash" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_ALL" />
 </android.support.constraint.ConstraintLayout>
