@@ -8,16 +8,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import com.nilhcem.blenamebadge.R
-import com.nilhcem.blenamebadge.core.android.ext.showKeyboard
+import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
 import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.core.android.viewbinding.bindView
 import com.nilhcem.blenamebadge.device.model.DataToSend
@@ -37,6 +34,8 @@ class MessageActivity : AppCompatActivity() {
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
     private val mode: Spinner by bindView(R.id.mode)
+    private val timeout: Spinner by bindView(R.id.timeout)
+    private val wait: Spinner by bindView(R.id.waiting)
     private val send: Button by bindView(R.id.send_button_ALL)
     val send_BF: Button by bindView(R.id.send_button_BF)
     val send_89: Button by bindView(R.id.send_button_89)
@@ -52,7 +51,11 @@ class MessageActivity : AppCompatActivity() {
         val spinnerItem = android.R.layout.simple_spinner_dropdown_item
         speed.adapter = ArrayAdapter<String>(this, spinnerItem, Speed.values().mapIndexed { index, _ -> (index + 1).toString() })
         mode.adapter = ArrayAdapter<String>(this, spinnerItem, Mode.values().map { getString(it.stringResId) })
-        speed.setSelection(7)
+        wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(500L, 550L, 600L, 650L, 700L, 750L, 800L, 850L, 900L, 950L))
+        timeout.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(5_000L, 10_000L, 15_000L, 20_000L, 25_000L, 30_000L))
+        speed.setSelection(7)//speed8
+        wait.setSelection(0)//sleep500
+        timeout.setSelection(1)//timeout10000
 
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -65,7 +68,7 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF, send_89, send_3B, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF, send_89, send_3B, send_CD)
         }
 
         send_BF.setOnClickListener {
@@ -73,28 +76,28 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_BF)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_89)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_89)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_3B)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_3B)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_CD)
         }
     }
 
@@ -102,7 +105,7 @@ class MessageActivity : AppCompatActivity() {
         super.onResume()
         prepareForScan()
         //content.requestFocus()
-        //content.showKeyboard()
+        content.hideKeyboard()
     }
 
     override fun onPause() {

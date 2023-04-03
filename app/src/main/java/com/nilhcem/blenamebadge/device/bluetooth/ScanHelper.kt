@@ -8,11 +8,6 @@ import com.nilhcem.blenamebadge.device.bluetooth.Constants.SERVICE_UUID
 import no.nordicsemi.android.support.v18.scanner.*
 
 class ScanHelper {
-
-    companion object {
-        private val SCAN_TIMEOUT_MS = 20_000L
-    }
-
     private var isScanning = false
     private var onDeviceFoundCallback: ((BluetoothDevice?) -> Unit)? = null
 
@@ -38,7 +33,7 @@ class ScanHelper {
         }
     }
 
-    fun startLeScan(onDeviceFoundCallback: ((BluetoothDevice?) -> Unit)) {
+    fun startLeScan(timeout : Long, onDeviceFoundCallback: ((BluetoothDevice?) -> Unit)) {
         this.onDeviceFoundCallback = onDeviceFoundCallback
         isScanning = true
 
@@ -53,7 +48,7 @@ class ScanHelper {
         scanner.startScan(filters, settings, scanCallback)
 
         // Stops scanning after a pre-defined scan period.
-        stopScanHandler.postDelayed(stopScanRunnable, SCAN_TIMEOUT_MS)
+        stopScanHandler.postDelayed(stopScanRunnable, timeout)
     }
 
     fun stopLeScan() {
