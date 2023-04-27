@@ -37,7 +37,13 @@ class MessagePresenter {
                 Toast.makeText(context, "BT non trovati" , Toast.LENGTH_LONG).show()
             } else {
                 Timber.e { "Device found: $device" }
-                Toast.makeText(context, "BT found $device" , Toast.LENGTH_SHORT).show()
+                when (device.address) {
+                    "38:3B:26:EC:64:BF" -> Toast.makeText(context, "#1 found $device" , Toast.LENGTH_SHORT).show()
+                    "38:3B:26:EC:64:89" -> Toast.makeText(context, "#2 found $device" , Toast.LENGTH_SHORT).show()
+                    "38:3B:26:EC:64:3B" -> Toast.makeText(context, "#3 found $device" , Toast.LENGTH_SHORT).show()
+                    "38:3B:26:EC:64:CD" -> Toast.makeText(context, "#4 found $device" , Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(context, "BT found $device" , Toast.LENGTH_SHORT).show()
+                }
                 val activity : MessageActivity = context as MessageActivity
                 gattClient.startClient(context, device.address) { onConnected ->
                     if (onConnected) {
