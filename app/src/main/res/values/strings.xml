@@ -24,4 +24,8 @@
     <string name="send_button_89">2</string>
     <string name="send_button_3B">3</string>
     <string name="send_button_CD">4</string>
+    <string name="prev_button">PREV</string>
+    <string name="pause_button">PAUSE</string>
+    <string name="play_button">PLAY</string>
+    <string name="next_button">NEXT</string>
 </resources>

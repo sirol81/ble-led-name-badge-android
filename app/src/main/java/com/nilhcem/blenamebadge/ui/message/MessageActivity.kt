@@ -41,6 +41,10 @@ class MessageActivity : AppCompatActivity() {
     val send_89: Button by bindView(R.id.send_button_89)
     val send_3B: Button by bindView(R.id.send_button_3B)
     val send_CD: Button by bindView(R.id.send_button_CD)
+    val prev_bt: Button by bindView(R.id.prev_button)
+    val play_bt: Button by bindView(R.id.play_button)
+    val pause_bt: Button by bindView(R.id.pause_button)
+    val next_bt: Button by bindView(R.id.next_button)
 
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
@@ -99,6 +103,19 @@ class MessageActivity : AppCompatActivity() {
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
             presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_CD)
+        }
+
+        prev_bt.setOnClickListener {
+            Toast.makeText(this, "PREV" , Toast.LENGTH_SHORT).show()
+        }
+        play_bt.setOnClickListener {
+            Toast.makeText(this, "PLAY" , Toast.LENGTH_SHORT).show()
+        }
+        pause_bt.setOnClickListener {
+            Toast.makeText(this, "PAUSE" , Toast.LENGTH_SHORT).show()
+        }
+        next_bt.setOnClickListener {
+            Toast.makeText(this, "NEXT" , Toast.LENGTH_SHORT).show()
         }
     }
 
