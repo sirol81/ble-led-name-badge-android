@@ -145,7 +145,9 @@ class MessageActivity : AppCompatActivity() {
             {
                 index -= 1
             }
-            songtitle.setText(loop[index].nameWithoutExtension)
+            if (loop.count() > 0) {
+                songtitle.setText(loop[index].nameWithoutExtension)
+            }
         }
         play_bt.setOnClickListener {
             val applicationContext: Activity = this
@@ -156,7 +158,7 @@ class MessageActivity : AppCompatActivity() {
                                 .setUsage(AudioAttributes.USAGE_MEDIA)
                                 .build()
                 )
-                setDataSource(applicationContext, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.water))
+                setDataSource(applicationContext, Uri.fromFile(loop[index]))
                 prepare()
                 start()
             }
@@ -171,7 +173,9 @@ class MessageActivity : AppCompatActivity() {
             {
                 index += 1
             }
-            songtitle.setText(loop[index].nameWithoutExtension)
+            if (loop.count() > 0) {
+                songtitle.setText(loop[index].nameWithoutExtension)
+            }
         }
         fadeL_bt.setOnClickListener {
             Toast.makeText(this, "L Fade" , Toast.LENGTH_SHORT).show()
@@ -181,6 +185,9 @@ class MessageActivity : AppCompatActivity() {
         }
         add_bt.setOnClickListener {
             checkPermissions()
+            if (loop.count() > 0) {
+                songtitle.setText(loop[index].nameWithoutExtension)
+            }
         }
         reset_bt.setOnClickListener {
             if (mediaPlayer != null) {
