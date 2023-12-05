@@ -12,6 +12,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -58,6 +59,30 @@ class MessageActivity : AppCompatActivity() {
 
     var mediaPlayer: MediaPlayer? = null
 
+    private val REQUEST_PERMISSION_CODE = 1001
+
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_CODE)
+        } else {
+            // Permissions already granted
+            accessDownloadsFolder()
+        }
+    }
+
+    private fun accessDownloadsFolder() {
+        val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        if (downloadsFolder != null && downloadsFolder.exists()) {
+            val files = downloadsFolder.listFiles()
+            for (file in files) {
+                Toast.makeText(this, "FILE" , Toast.LENGTH_SHORT).show()
+            }
+
+        } else {
+            // Downloads folder not found
+            // Handle accordingly
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.message_activity)
@@ -147,7 +172,7 @@ class MessageActivity : AppCompatActivity() {
             Toast.makeText(this, "R Fade" , Toast.LENGTH_SHORT).show()
         }
         add_bt.setOnClickListener {
-            Toast.makeText(this, "ADD" , Toast.LENGTH_SHORT).show()
+            checkPermissions()
         }
         reset_bt.setOnClickListener {
             if (mediaPlayer != null) {
@@ -193,7 +218,16 @@ class MessageActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.grant_location_permission, Toast.LENGTH_SHORT).show()
                 finish()
             }
-        } else {
+        } else if (requestCode == REQUEST_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Timber.d { "Code permission accepted" }
+                accessDownloadsFolder()
+            } else {
+                Toast.makeText(this, R.string.grant_code_permission, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
+        else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
