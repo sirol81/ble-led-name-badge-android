@@ -28,4 +28,8 @@
     <string name="pause_button">PAUSE</string>
     <string name="play_button">PLAY</string>
     <string name="next_button">NEXT</string>
+    <string name="add_button">ADD</string>
+    <string name="reset_button">RESET</string>
+    <string name="fade_left">L-Fade</string>
+    <string name="fade_right">R-Fade</string>
 </resources>

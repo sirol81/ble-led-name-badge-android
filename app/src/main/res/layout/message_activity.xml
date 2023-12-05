@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:inputType="text"
+        android:text="MESSAGE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,6 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
+        android:contentDescription="WAITING"
         app:layout_constraintEnd_toStartOf="@+id/timeout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
@@ -30,6 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
+        android:contentDescription="TIMEOUT"
         app:layout_constraintEnd_toStartOf="@+id/flash"
         app:layout_constraintStart_toEndOf="@+id/waiting"
         app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
@@ -79,6 +82,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:layout_marginTop="0dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/send_button"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/timeout"
@@ -144,7 +148,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/prev_button"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/play_button"
@@ -157,7 +161,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/play_button"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/pause_button"
@@ -170,7 +174,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/pause_button"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/next_button"
@@ -183,23 +187,76 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="4dp"
         android:text="@string/next_button"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pause_button"
         app:layout_constraintTop_toBottomOf="@+id/send_button_CD" />
 
-    <EditText
+    <Button
+        android:id="@+id/fade_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/fade_left"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/add_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/prev_button" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/add_button"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/reset_button"
+        app:layout_constraintStart_toEndOf="@+id/fade_left"
+        app:layout_constraintTop_toBottomOf="@+id/play_button" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/reset_button"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/fade_right"
+        app:layout_constraintStart_toEndOf="@+id/add_button"
+        app:layout_constraintTop_toBottomOf="@+id/pause_button" />
+
+    <Button
+        android:id="@+id/fade_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/fade_right"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/reset_button"
+        app:layout_constraintTop_toBottomOf="@+id/next_button" />
+
+    <TextView
         android:id="@+id/song_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:inputType="text"
+        android:text="SONG TITLE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pause_button" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

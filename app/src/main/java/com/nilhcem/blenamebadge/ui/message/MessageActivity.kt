@@ -45,6 +45,10 @@ class MessageActivity : AppCompatActivity() {
     val play_bt: Button by bindView(R.id.play_button)
     val pause_bt: Button by bindView(R.id.pause_button)
     val next_bt: Button by bindView(R.id.next_button)
+    val fadeL_bt: Button by bindView(R.id.fade_left)
+    val fadeR_bt: Button by bindView(R.id.fade_right)
+    val add_bt: Button by bindView(R.id.add_button)
+    val reset_bt: Button by bindView(R.id.reset_button)
 
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
@@ -116,6 +120,18 @@ class MessageActivity : AppCompatActivity() {
         }
         next_bt.setOnClickListener {
             Toast.makeText(this, "NEXT" , Toast.LENGTH_SHORT).show()
+        }
+        fadeL_bt.setOnClickListener {
+            Toast.makeText(this, "L Fade" , Toast.LENGTH_SHORT).show()
+        }
+        fadeR_bt.setOnClickListener {
+            Toast.makeText(this, "R Fade" , Toast.LENGTH_SHORT).show()
+        }
+        add_bt.setOnClickListener {
+            Toast.makeText(this, "ADD" , Toast.LENGTH_SHORT).show()
+        }
+        reset_bt.setOnClickListener {
+            Toast.makeText(this, "RESET" , Toast.LENGTH_SHORT).show()
         }
     }
 
