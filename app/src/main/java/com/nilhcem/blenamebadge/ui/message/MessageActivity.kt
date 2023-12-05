@@ -56,7 +56,7 @@ class MessageActivity : AppCompatActivity() {
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
 
-    val mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +120,7 @@ class MessageActivity : AppCompatActivity() {
         play_bt.setOnClickListener {
             val myUri: Uri = Uri.parse("test") // initialize Uri here
             val applicationContext: Activity = this
-            val mediaPlayer = MediaPlayer().apply {
+            mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
                         AudioAttributes.Builder()
                                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
