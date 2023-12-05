@@ -8,12 +8,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
-import android.media.MediaPlayer
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
 import com.nilhcem.blenamebadge.core.android.log.Timber
@@ -116,8 +118,18 @@ class MessageActivity : AppCompatActivity() {
             Toast.makeText(this, "PREV" , Toast.LENGTH_SHORT).show()
         }
         play_bt.setOnClickListener {
-            if (mediaPlayer != null) {
-                mediaPlayer!!.start()
+            val myUri: Uri = Uri.parse("test") // initialize Uri here
+            val applicationContext: Activity = this
+            val mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                        AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .build()
+                )
+                setDataSource(applicationContext, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.water))
+                prepare()
+                start()
             }
         }
         pause_bt.setOnClickListener {
