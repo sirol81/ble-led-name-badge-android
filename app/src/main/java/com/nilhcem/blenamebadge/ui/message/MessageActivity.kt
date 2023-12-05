@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
+import android.media.MediaPlayer
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
 import com.nilhcem.blenamebadge.core.android.log.Timber
@@ -52,6 +53,8 @@ class MessageActivity : AppCompatActivity() {
 
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
+
+    val mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,10 +116,14 @@ class MessageActivity : AppCompatActivity() {
             Toast.makeText(this, "PREV" , Toast.LENGTH_SHORT).show()
         }
         play_bt.setOnClickListener {
-            Toast.makeText(this, "PLAY" , Toast.LENGTH_SHORT).show()
+            if (mediaPlayer != null) {
+                mediaPlayer!!.start()
+            }
         }
         pause_bt.setOnClickListener {
-            Toast.makeText(this, "PAUSE" , Toast.LENGTH_SHORT).show()
+            if (mediaPlayer != null) {
+                mediaPlayer!!.pause()
+            }
         }
         next_bt.setOnClickListener {
             Toast.makeText(this, "NEXT" , Toast.LENGTH_SHORT).show()
@@ -131,7 +138,13 @@ class MessageActivity : AppCompatActivity() {
             Toast.makeText(this, "ADD" , Toast.LENGTH_SHORT).show()
         }
         reset_bt.setOnClickListener {
-            Toast.makeText(this, "RESET" , Toast.LENGTH_SHORT).show()
+            if (mediaPlayer != null) {
+                mediaPlayer!!.stop()
+                // after stopping the mediaplayer instance
+                // it is again need to be prepared
+                // for the next instance of playback
+                mediaPlayer!!.prepare()
+            }
         }
     }
 
@@ -146,6 +159,9 @@ class MessageActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         presenter.onPause()
+        if (mediaPlayer != null) {
+            mediaPlayer!!.pause()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
