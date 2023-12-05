@@ -25,6 +25,7 @@ import com.nilhcem.blenamebadge.device.model.DataToSend
 import com.nilhcem.blenamebadge.device.model.Message
 import com.nilhcem.blenamebadge.device.model.Mode
 import com.nilhcem.blenamebadge.device.model.Speed
+import java.io.File
 
 class MessageActivity : AppCompatActivity() {
 
@@ -34,6 +35,7 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private val content: EditText by bindView(R.id.text_to_send)
+    private val songtitle: TextView by bindView(R.id.song_title)
     private val flash: CheckBox by bindView(R.id.flash)
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
@@ -58,6 +60,8 @@ class MessageActivity : AppCompatActivity() {
     lateinit var clipboardManager : ClipboardManager
 
     var mediaPlayer: MediaPlayer? = null
+    val loop: ArrayList<File> = ArrayList<File>()
+    var index = 0
 
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -74,10 +78,7 @@ class MessageActivity : AppCompatActivity() {
         val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         if (downloadsFolder != null && downloadsFolder.exists()) {
             val files = downloadsFolder.listFiles()
-            for (file in files) {
-                Toast.makeText(this, "FILE" , Toast.LENGTH_SHORT).show()
-            }
-
+            loop.addAll(files)
         } else {
             // Downloads folder not found
             // Handle accordingly
@@ -140,10 +141,13 @@ class MessageActivity : AppCompatActivity() {
         }
 
         prev_bt.setOnClickListener {
-            Toast.makeText(this, "PREV" , Toast.LENGTH_SHORT).show()
+            if (index > 0)
+            {
+                index -= 1
+            }
+            songtitle.setText(loop[index].nameWithoutExtension)
         }
         play_bt.setOnClickListener {
-            val myUri: Uri = Uri.parse("test") // initialize Uri here
             val applicationContext: Activity = this
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
@@ -163,7 +167,11 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         next_bt.setOnClickListener {
-            Toast.makeText(this, "NEXT" , Toast.LENGTH_SHORT).show()
+            if (index < loop.count()-1)
+            {
+                index += 1
+            }
+            songtitle.setText(loop[index].nameWithoutExtension)
         }
         fadeL_bt.setOnClickListener {
             Toast.makeText(this, "L Fade" , Toast.LENGTH_SHORT).show()
