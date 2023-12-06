@@ -150,7 +150,9 @@
         android:paddingRight="10dp"
         android:layout_marginTop="4dp"
         android:text="@string/prev_button"
+        android:textColor="@color/colorGreen"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/play_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/send_button_BF" />
@@ -163,7 +165,9 @@
         android:paddingRight="10dp"
         android:layout_marginTop="4dp"
         android:text="@string/play_button"
+        android:textColor="@color/colorWhite"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/pause_button"
         app:layout_constraintStart_toEndOf="@+id/prev_button"
         app:layout_constraintTop_toBottomOf="@+id/send_button_3B" />
@@ -177,6 +181,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/pause_button"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/next_button"
         app:layout_constraintStart_toEndOf="@+id/play_button"
         app:layout_constraintTop_toBottomOf="@+id/send_button_89" />
@@ -189,7 +194,9 @@
         android:paddingRight="10dp"
         android:layout_marginTop="4dp"
         android:text="@string/next_button"
+        android:textColor="@color/colorOrange"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pause_button"
         app:layout_constraintTop_toBottomOf="@+id/send_button_CD" />
@@ -203,6 +210,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/fade_left"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorGreen"
         app:layout_constraintEnd_toStartOf="@+id/add_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/prev_button" />
@@ -216,6 +224,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/add_button"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorPrimaryDark"
         app:layout_constraintEnd_toStartOf="@+id/reset_button"
         app:layout_constraintStart_toEndOf="@+id/fade_left"
         app:layout_constraintTop_toBottomOf="@+id/play_button" />
@@ -229,6 +238,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/reset_button"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorAccent"
         app:layout_constraintEnd_toStartOf="@+id/fade_right"
         app:layout_constraintStart_toEndOf="@+id/add_button"
         app:layout_constraintTop_toBottomOf="@+id/pause_button" />
@@ -242,6 +252,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/fade_right"
         android:textSize="20sp"
+        android:backgroundTint="@color/colorOrange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/reset_button"
         app:layout_constraintTop_toBottomOf="@+id/next_button" />
