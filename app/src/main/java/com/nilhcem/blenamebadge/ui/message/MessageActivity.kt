@@ -26,6 +26,8 @@ import com.nilhcem.blenamebadge.device.model.Message
 import com.nilhcem.blenamebadge.device.model.Mode
 import com.nilhcem.blenamebadge.device.model.Speed
 import java.io.File
+import java.lang.Float.min
+import java.lang.Float.max
 
 class MessageActivity : AppCompatActivity() {
 
@@ -59,9 +61,11 @@ class MessageActivity : AppCompatActivity() {
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
 
-    var mediaPlayer: MediaPlayer? = null
     val loop: ArrayList<File> = ArrayList<File>()
+    var mediaPlayer: MediaPlayer? = null
     var index = 0
+    var l:Float = 1.0F
+    var r:Float = 1.0F
 
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -151,6 +155,9 @@ class MessageActivity : AppCompatActivity() {
         }
         play_bt.setOnClickListener {
             val applicationContext: Activity = this
+            if (mediaPlayer != null) {
+                mediaPlayer!!.stop()
+            }
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
                         AudioAttributes.Builder()
@@ -159,6 +166,7 @@ class MessageActivity : AppCompatActivity() {
                                 .build()
                 )
                 setDataSource(applicationContext, Uri.fromFile(loop[index]))
+                setVolume(l, r)
                 prepare()
                 start()
             }
@@ -178,10 +186,35 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         fadeL_bt.setOnClickListener {
-            Toast.makeText(this, "L Fade" , Toast.LENGTH_SHORT).show()
+            val mp = mediaPlayer
+            if (mp != null) {
+                mp.setVolume(l, r)
+                while ( r > 0 && l <= 1)
+                {
+                    l += 0.1F
+                    r -= 0.1F
+                    l = min(l, 1.0F)
+                    r = max(r,0.0F)
+                    mp.setVolume(l, r)
+                    Thread.sleep(500)
+                }
+            }
         }
         fadeR_bt.setOnClickListener {
-            Toast.makeText(this, "R Fade" , Toast.LENGTH_SHORT).show()
+            val mp = mediaPlayer
+            if (mp != null) {
+
+                mp.setVolume(l, r)
+                while (l > 0 && r <= 1)
+                {
+                    l -= 0.1F
+                    r += 0.1F
+                    l = max(l,0.0F)
+                    r = min(r, 1.0F)
+                    mp.setVolume(l, r)
+                    Thread.sleep(500)
+                }
+            }
         }
         add_bt.setOnClickListener {
             checkPermissions()
@@ -190,12 +223,15 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         reset_bt.setOnClickListener {
+            l = 1.0F
+            r = 1.0F
             if (mediaPlayer != null) {
                 mediaPlayer!!.stop()
                 // after stopping the mediaplayer instance
                 // it is again need to be prepared
                 // for the next instance of playback
                 mediaPlayer!!.prepare()
+                mediaPlayer!!.setVolume(l, r)
             }
         }
     }
