@@ -16,11 +16,11 @@ class MessagePresenter {
     private val scanHelper = ScanHelper()
     private val gattClient = GattClient()
 
-    fun sendMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, timeout: Long, vararg buttons: Button) {
+    fun sendMessage(context: Context, dataToSend: DataToSend, text: String, sleep_time: Long, timeout: Long, vararg buttons: Button) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
         val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses, sleep_time, timeout, buttons)
+        sendBytes(context, byteData, addresses, text, sleep_time, timeout, buttons)
     }
 
     fun onPause() {
@@ -28,7 +28,7 @@ class MessagePresenter {
         gattClient.stopClient()
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses : MutableList<String>, sleep : Long, timeout : Long,buttons: Array<out Button>) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses: MutableList<String>, text: String, sleep: Long, timeout: Long,buttons: Array<out Button>) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
         scanHelper.stopLeScan()
         scanHelper.startLeScan(timeout) { device ->
@@ -64,16 +64,28 @@ class MessagePresenter {
                                 }
                             }
                             when (device.address) {
-                                "38:3B:26:EC:64:BF" -> activity.runOnUiThread{ sendBF.isEnabled = false }
-                                "38:3B:26:EC:64:89" -> activity.runOnUiThread{ send89.isEnabled = false }
-                                "38:3B:26:EC:64:3B" -> activity.runOnUiThread{ send3B.isEnabled = false }
-                                "38:3B:26:EC:64:CD" -> activity.runOnUiThread{ sendCD.isEnabled = false }
+                                "38:3B:26:EC:64:BF" -> activity.runOnUiThread{
+                                    sendBF.isEnabled = false
+                                    sendBF.setTag(text)
+                                }
+                                "38:3B:26:EC:64:89" -> activity.runOnUiThread{
+                                    send89.isEnabled = false
+                                    send89.setTag(text)
+                                }
+                                "38:3B:26:EC:64:3B" -> activity.runOnUiThread{
+                                    send3B.isEnabled = false
+                                    send3B.setTag(text)
+                                }
+                                "38:3B:26:EC:64:CD" -> activity.runOnUiThread{
+                                    sendCD.isEnabled = false
+                                    sendCD.setTag(text)
+                                }
                             }
                             Thread.sleep(sleep)
                             if (addresses.isNotEmpty() && buttons.count() > 1)
                             {
                                 Timber.e { addresses.joinToString(",") }
-                                sendBytes(context, byteData, addresses, sleep, timeout, buttons)
+                                sendBytes(context, byteData, addresses, text, sleep, timeout, buttons)
                             }
                         }
                     }

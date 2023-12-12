@@ -55,7 +55,7 @@ class MessageActivity : AppCompatActivity() {
     val next_bt: Button by bindView(R.id.next_button)
     val fadeL_bt: Button by bindView(R.id.fade_left)
     val fadeR_bt: Button by bindView(R.id.fade_right)
-    val add_bt: Button by bindView(R.id.add_button)
+    val stop_bt: Button by bindView(R.id.stop_button)
     val reset_bt: Button by bindView(R.id.reset_button)
 
     private val presenter by lazy { MessagePresenter() }
@@ -88,6 +88,16 @@ class MessageActivity : AppCompatActivity() {
             // Handle accordingly
         }
     }
+
+    private fun enableDisableAll(value: Boolean)
+    {
+        pause_bt.isEnabled = value
+        fadeL_bt.isEnabled = value
+        fadeR_bt.isEnabled = value
+        stop_bt.isEnabled = value
+        reset_bt.isEnabled = value
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.message_activity)
@@ -103,16 +113,35 @@ class MessageActivity : AppCompatActivity() {
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
+        checkPermissions()
+        if (loop.count() > 0) {
+            songtitle.setText(loop[index].nameWithoutExtension)
+        }
+
         send.setOnClickListener {
-            send_BF.isEnabled = true
-            send_89.isEnabled = true
-            send_3B.isEnabled = true
-            send_CD.isEnabled = true
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF, send_89, send_3B, send_CD)
+
+            if (send_BF.getTag() != content.text.trim().toString())
+            {
+                send_BF.isEnabled = true
+            }
+            if (send_89.getTag() != content.text.trim().toString())
+            {
+                send_89.isEnabled = true
+            }
+            if (send_3B.getTag() != content.text.trim().toString())
+            {
+                send_3B.isEnabled = true
+            }
+            if (send_CD.getTag() != content.text.trim().toString())
+            {
+                send_CD.isEnabled = true
+            }
+
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF, send_89, send_3B, send_CD)
         }
 
         send_BF.setOnClickListener {
@@ -120,28 +149,28 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_89)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_89)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_3B)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_3B)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, timeout.selectedItem as Long, send_CD)
+            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_CD)
         }
 
         prev_bt.setOnClickListener {
@@ -173,7 +202,14 @@ class MessageActivity : AppCompatActivity() {
         }
         pause_bt.setOnClickListener {
             if (mediaPlayer != null) {
-                mediaPlayer!!.pause()
+                if (mediaPlayer!!.isPlaying())
+                {
+                    mediaPlayer!!.pause()
+                }
+                else
+                {
+                    mediaPlayer!!.start()
+                }
             }
         }
         next_bt.setOnClickListener {
@@ -189,15 +225,17 @@ class MessageActivity : AppCompatActivity() {
             val mp = mediaPlayer
             if (mp != null) {
                 mp.setVolume(l, r)
+                enableDisableAll(false)
                 while ( r > 0 && l <= 1)
                 {
-                    l += 0.1F
-                    r -= 0.1F
+                    l += 0.05F
+                    r -= 0.05F
                     l = min(l, 1.0F)
                     r = max(r,0.0F)
                     mp.setVolume(l, r)
-                    Thread.sleep(500)
+                    Thread.sleep(250)
                 }
+                enableDisableAll(true)
             }
         }
         fadeR_bt.setOnClickListener {
@@ -205,32 +243,48 @@ class MessageActivity : AppCompatActivity() {
             if (mp != null) {
 
                 mp.setVolume(l, r)
+                enableDisableAll(false)
                 while (l > 0 && r <= 1)
                 {
-                    l -= 0.1F
-                    r += 0.1F
+                    l -= 0.05F
+                    r += 0.05F
                     l = max(l,0.0F)
                     r = min(r, 1.0F)
                     mp.setVolume(l, r)
-                    Thread.sleep(500)
+                    Thread.sleep(250)
                 }
+                enableDisableAll(true)
             }
         }
-        add_bt.setOnClickListener {
-            checkPermissions()
-            if (loop.count() > 0) {
-                songtitle.setText(loop[index].nameWithoutExtension)
+        stop_bt.setOnClickListener {
+            val mp = mediaPlayer
+            if (mp != null) {
+                mp.setVolume(l, r)
+                enableDisableAll(false)
+                while ( r > 0 && l > 0)
+                {
+                    l -= 0.05F
+                    r -= 0.05F
+                    l = max(l, 0.0F)
+                    r = max(r,0.0F)
+                    mp.setVolume(l, r)
+                    Thread.sleep(250)
+                }
+                enableDisableAll(true)
+                mp!!.stop()
+                // after stopping the mediaplayer instance
+                // it is again need to be prepared
+                // for the next instance of playback
+                mp!!.prepare()
+                l = 1.0F
+                r = 1.0F
+                mp!!.setVolume(l, r)
             }
         }
         reset_bt.setOnClickListener {
             l = 1.0F
             r = 1.0F
             if (mediaPlayer != null) {
-                mediaPlayer!!.stop()
-                // after stopping the mediaplayer instance
-                // it is again need to be prepared
-                // for the next instance of playback
-                mediaPlayer!!.prepare()
                 mediaPlayer!!.setVolume(l, r)
             }
         }
