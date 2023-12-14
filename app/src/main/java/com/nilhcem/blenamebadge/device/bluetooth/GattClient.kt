@@ -27,8 +27,8 @@ class GattClient {
                 gatt.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Timber.i { "Disconnected from GATT client" }
-                //stopClient()
-                //onConnectedListener?.invoke(false)
+                stopClient()
+                onConnectedListener?.invoke(false)
             }
         }
 

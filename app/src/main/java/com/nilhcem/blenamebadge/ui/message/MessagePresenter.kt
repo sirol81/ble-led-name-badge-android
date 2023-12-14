@@ -37,6 +37,10 @@ class MessagePresenter {
                     }
                 }
             }
+            else
+            {//some kind of error
+                sendBT(context, byteData, text, sleep, deviceaddress, button)
+            }
         }
     }
 }

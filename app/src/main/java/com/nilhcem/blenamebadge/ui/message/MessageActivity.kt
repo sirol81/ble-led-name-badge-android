@@ -109,8 +109,8 @@ class MessageActivity : AppCompatActivity() {
         wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
         timeout.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(1_000L, 2_000L, 3_000L, 4_000L, 5_000L))
         speed.setSelection(7)//speed8
-        wait.setSelection(5)//sleep500
-        timeout.setSelection(4)//timeout10000
+        wait.setSelection(1)//sleep
+        timeout.setSelection(4)//timeout
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
