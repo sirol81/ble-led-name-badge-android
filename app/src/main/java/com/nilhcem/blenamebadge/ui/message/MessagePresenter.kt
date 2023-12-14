@@ -19,8 +19,7 @@ class MessagePresenter {
     fun sendMessage(context: Context, dataToSend: DataToSend, text: String, sleep_time: Long, timeout: Long, vararg buttons: Button) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, addresses, text, sleep_time, timeout, buttons)
+        sendBytes(context, byteData, text, sleep_time, timeout, buttons)
     }
 
     fun onPause() {
@@ -28,7 +27,7 @@ class MessagePresenter {
         gattClient.stopClient()
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, addresses: MutableList<String>, text: String, sleep: Long, timeout: Long,buttons: Array<out Button>) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, text: String, sleep: Long, timeout: Long, buttons: Array<out Button>) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
         scanHelper.stopLeScan()
         scanHelper.startLeScan(timeout) { device ->
@@ -82,10 +81,9 @@ class MessagePresenter {
                                 }
                             }
                             Thread.sleep(sleep)
-                            if (addresses.isNotEmpty() && buttons.count() > 1)
+                            if (buttons.count() > 1)
                             {
-                                Timber.e { addresses.joinToString(",") }
-                                sendBytes(context, byteData, addresses, text, sleep, timeout, buttons)
+                                sendBytes(context, byteData, text, sleep, timeout, buttons)
                             }
                         }
                     }
