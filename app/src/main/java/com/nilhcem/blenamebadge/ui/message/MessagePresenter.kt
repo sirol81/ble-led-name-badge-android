@@ -9,83 +9,31 @@ import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.core.utils.ByteArrayUtils
 import com.nilhcem.blenamebadge.device.DataToByteArrayConverter
 import com.nilhcem.blenamebadge.device.bluetooth.GattClient
-import com.nilhcem.blenamebadge.device.bluetooth.ScanHelper
 import com.nilhcem.blenamebadge.device.model.DataToSend
 
 class MessagePresenter {
-    private val scanHelper = ScanHelper()
-    private val gattClient = GattClient()
+    private var gattClient = GattClient()
 
-    fun sendMessage(context: Context, dataToSend: DataToSend, text: String, sleep_time: Long, timeout: Long, vararg buttons: Button) {
+    fun sendSingleMessage(context: Context, dataToSend: DataToSend, text: String, sleep_time: Long, button: Button) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        sendBytes(context, byteData, text, sleep_time, timeout, buttons)
+        sendBT(context, byteData, text, sleep_time, button.getTag().toString(), button)
     }
 
     fun onPause() {
-        scanHelper.stopLeScan()
         gattClient.stopClient()
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, text: String, sleep: Long, timeout: Long, buttons: Array<out Button>) {
-        Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
-        scanHelper.stopLeScan()
-        scanHelper.startLeScan(timeout) { device ->
-            if (device == null) {
-                Timber.e { "Scan could not find any device" }
-                Toast.makeText(context, "BT non trovati" , Toast.LENGTH_LONG).show()
-            } else {
-                Timber.e { "Device found: $device" }
-                when (device.address) {
-                    "38:3B:26:EC:64:BF" -> Toast.makeText(context, "#1 found $device" , Toast.LENGTH_SHORT).show()
-                    "38:3B:26:EC:64:89" -> Toast.makeText(context, "#2 found $device" , Toast.LENGTH_SHORT).show()
-                    "38:3B:26:EC:64:3B" -> Toast.makeText(context, "#3 found $device" , Toast.LENGTH_SHORT).show()
-                    "38:3B:26:EC:64:CD" -> Toast.makeText(context, "#4 found $device" , Toast.LENGTH_SHORT).show()
-                    else -> Toast.makeText(context, "BT found $device" , Toast.LENGTH_SHORT).show()
-                }
-                val activity : MessageActivity = context as MessageActivity
-                gattClient.startClient(context, device.address) { onConnected ->
-                    if (onConnected) {
-                        gattClient.writeDataStart(byteData) {
-                            Timber.i { "Data sent to $device" }
-                            gattClient.stopClient()
-                            var sendBF : Button = buttons[0]
-                            var send89 : Button = buttons[0]
-                            var send3B : Button = buttons[0]
-                            var sendCD : Button = buttons[0]
-                            for (b in buttons)
-                            {
-                                when (b.id) {
-                                    R.id.send_button_BF -> sendBF = b
-                                    R.id.send_button_89 -> send89 = b
-                                    R.id.send_button_3B -> send3B = b
-                                    R.id.send_button_CD -> sendCD = b
-                                }
-                            }
-                            when (device.address) {
-                                "38:3B:26:EC:64:BF" -> activity.runOnUiThread{
-                                    sendBF.isEnabled = false
-                                    sendBF.setTag(text)
-                                }
-                                "38:3B:26:EC:64:89" -> activity.runOnUiThread{
-                                    send89.isEnabled = false
-                                    send89.setTag(text)
-                                }
-                                "38:3B:26:EC:64:3B" -> activity.runOnUiThread{
-                                    send3B.isEnabled = false
-                                    send3B.setTag(text)
-                                }
-                                "38:3B:26:EC:64:CD" -> activity.runOnUiThread{
-                                    sendCD.isEnabled = false
-                                    sendCD.setTag(text)
-                                }
-                            }
-                            Thread.sleep(sleep)
-                            if (buttons.count() > 1)
-                            {
-                                sendBytes(context, byteData, text, sleep, timeout, buttons)
-                            }
-                        }
+    private fun sendBT(context: Context, byteData: List<ByteArray>, text: String, sleep: Long, deviceaddress : String, button : Button) {
+        val activity : MessageActivity = context as MessageActivity
+        gattClient = GattClient()
+        gattClient.startClient(context, deviceaddress, sleep) { onConnected ->
+            if (onConnected) {
+                gattClient.writeDataStart(byteData) {
+                    gattClient.stopClient()
+
+                    activity.runOnUiThread{
+                        button.isEnabled = false
                     }
                 }
             }

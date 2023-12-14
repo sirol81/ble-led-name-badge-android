@@ -11,15 +11,12 @@ import java.util.*
 
 class GattClient {
 
-    companion object {
-        private val WRITE_TIMEOUT_MS = 50L
-    }
-
     private var bluetoothManager: BluetoothManager? = null
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var onConnectedListener: ((Boolean) -> Unit)? = null
     private var onFinishWritingDataListener: (() -> Unit)? = null
+    private var wait: Long = 50L
 
     private val messagesToSend = LinkedList<ByteArray>()
 
@@ -47,7 +44,7 @@ class GattClient {
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             Timber.i { "onCharacteristicWrite" }
-            Thread.sleep(WRITE_TIMEOUT_MS)
+            Thread.sleep(wait)
             writeNextData()
         }
     }
@@ -71,10 +68,11 @@ class GattClient {
         }
     }
 
-    fun startClient(context: Context, deviceAddress: String, onConnectedListener: (Boolean) -> Unit) {
+    fun startClient(context: Context, deviceAddress: String, wait: Long, onConnectedListener: (Boolean) -> Unit) {
         this.onConnectedListener = onConnectedListener
         bluetoothManager = context.getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager?.adapter
+        this.wait = wait
 
         val bluetoothDevice = bluetoothAdapter?.getRemoteDevice(deviceAddress)
         bluetoothGatt = bluetoothDevice?.connectGatt(context, false, gattCallback)

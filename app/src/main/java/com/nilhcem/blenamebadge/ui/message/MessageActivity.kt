@@ -66,6 +66,7 @@ class MessageActivity : AppCompatActivity() {
     var index = 0
     var l:Float = 1.0F
     var r:Float = 1.0F
+    val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
 
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -105,13 +106,18 @@ class MessageActivity : AppCompatActivity() {
         val spinnerItem = android.R.layout.simple_spinner_dropdown_item
         speed.adapter = ArrayAdapter<String>(this, spinnerItem, Speed.values().mapIndexed { index, _ -> (index + 1).toString() })
         mode.adapter = ArrayAdapter<String>(this, spinnerItem, Mode.values().map { getString(it.stringResId) })
-        wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(500L, 550L, 600L, 650L, 700L, 750L, 800L, 850L, 900L, 950L))
-        timeout.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(5_000L, 10_000L, 15_000L, 20_000L, 25_000L, 30_000L))
+        wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
+        timeout.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(1_000L, 2_000L, 3_000L, 4_000L, 5_000L))
         speed.setSelection(7)//speed8
-        wait.setSelection(0)//sleep500
-        timeout.setSelection(1)//timeout10000
+        wait.setSelection(5)//sleep500
+        timeout.setSelection(4)//timeout10000
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        send_BF.setTag(addresses[0])
+        send_89.setTag(addresses[1])
+        send_3B.setTag(addresses[2])
+        send_CD.setTag(addresses[3])
 
         checkPermissions()
         if (loop.count() > 0) {
@@ -124,24 +130,18 @@ class MessageActivity : AppCompatActivity() {
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
 
-            if (send_BF.getTag() != content.text.trim().toString())
-            {
-                send_BF.isEnabled = true
-            }
-            if (send_89.getTag() != content.text.trim().toString())
-            {
-                send_89.isEnabled = true
-            }
-            if (send_3B.getTag() != content.text.trim().toString())
-            {
-                send_3B.isEnabled = true
-            }
-            if (send_CD.getTag() != content.text.trim().toString())
-            {
-                send_CD.isEnabled = true
-            }
+            send_BF.isEnabled = true
+            send_89.isEnabled = true
+            send_3B.isEnabled = true
+            send_CD.isEnabled = true
 
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF, send_89, send_3B, send_CD)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_BF)
+            Thread.sleep(timeout.selectedItem as Long)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_89)
+            Thread.sleep(timeout.selectedItem as Long)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_3B)
+            Thread.sleep(timeout.selectedItem as Long)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD)
         }
 
         send_BF.setOnClickListener {
@@ -149,28 +149,28 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_BF)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_BF)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_89)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_89)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_3B)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_3B)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, timeout.selectedItem as Long, send_CD)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD)
         }
 
         prev_bt.setOnClickListener {
@@ -282,6 +282,11 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         reset_bt.setOnClickListener {
+            send_BF.isEnabled = true
+            send_89.isEnabled = true
+            send_3B.isEnabled = true
+            send_CD.isEnabled = true
+
             l = 1.0F
             r = 1.0F
             if (mediaPlayer != null) {
