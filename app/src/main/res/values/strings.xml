@@ -20,7 +20,7 @@
     <string name="mode_picture">Picture</string>
     <string name="mode_animation">Animation</string>
     <string name="mode_laser">Laser</string>
-    <string name="send_button">ALL</string>
+    <string name="send_button">CLR</string>
     <string name="send_button_BF">1</string>
     <string name="send_button_89">2</string>
     <string name="send_button_3B">3</string>

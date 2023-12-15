@@ -34,6 +34,7 @@ class MessagePresenter {
 
                     activity.runOnUiThread{
                         button.isEnabled = false
+                        Toast.makeText(context, "Sent to BT #" + button.getText() + " : OK", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
