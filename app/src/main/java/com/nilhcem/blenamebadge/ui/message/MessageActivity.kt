@@ -90,15 +90,6 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun enableDisableAll(value: Boolean)
-    {
-        pause_bt.isEnabled = value
-        fadeL_bt.isEnabled = value
-        fadeR_bt.isEnabled = value
-        stop_bt.isEnabled = value
-        reset_bt.isEnabled = value
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.message_activity)
@@ -122,13 +113,6 @@ class MessageActivity : AppCompatActivity() {
         checkPermissions()
         if (loop.count() > 0) {
             songtitle.setText(loop[index].nameWithoutExtension)
-        }
-
-        send.setOnClickListener {
-            send_BF.isEnabled = true
-            send_89.isEnabled = true
-            send_3B.isEnabled = true
-            send_CD.isEnabled = true
         }
 
         send_BF.setOnClickListener {
@@ -188,16 +172,10 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         pause_bt.setOnClickListener {
-            if (mediaPlayer != null) {
-                if (mediaPlayer!!.isPlaying())
-                {
-                    mediaPlayer!!.pause()
-                }
-                else
-                {
-                    mediaPlayer!!.start()
-                }
-            }
+            send_BF.isEnabled = true
+            send_89.isEnabled = true
+            send_3B.isEnabled = true
+            send_CD.isEnabled = true
         }
         next_bt.setOnClickListener {
             if (index < loop.count()-1)
@@ -212,7 +190,6 @@ class MessageActivity : AppCompatActivity() {
             val mp = mediaPlayer
             if (mp != null) {
                 mp.setVolume(l, r)
-                enableDisableAll(false)
                 while ( r > 0 && l <= 1)
                 {
                     l += 0.05F
@@ -222,7 +199,6 @@ class MessageActivity : AppCompatActivity() {
                     mp.setVolume(l, r)
                     Thread.sleep(250)
                 }
-                enableDisableAll(true)
             }
         }
         fadeR_bt.setOnClickListener {
@@ -230,7 +206,6 @@ class MessageActivity : AppCompatActivity() {
             if (mp != null) {
 
                 mp.setVolume(l, r)
-                enableDisableAll(false)
                 while (l > 0 && r <= 1)
                 {
                     l -= 0.05F
@@ -240,15 +215,13 @@ class MessageActivity : AppCompatActivity() {
                     mp.setVolume(l, r)
                     Thread.sleep(250)
                 }
-                enableDisableAll(true)
             }
         }
         stop_bt.setOnClickListener {
             val mp = mediaPlayer
             if (mp != null) {
                 mp.setVolume(l, r)
-                enableDisableAll(false)
-                while ( r > 0 && l > 0)
+                while ( r > 0 || l > 0)
                 {
                     l -= 0.05F
                     r -= 0.05F
@@ -257,7 +230,6 @@ class MessageActivity : AppCompatActivity() {
                     mp.setVolume(l, r)
                     Thread.sleep(250)
                 }
-                enableDisableAll(true)
                 mp!!.stop()
                 // after stopping the mediaplayer instance
                 // it is again need to be prepared
