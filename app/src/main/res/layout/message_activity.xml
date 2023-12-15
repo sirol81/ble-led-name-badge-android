@@ -170,7 +170,7 @@
         android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/pause_button"
         app:layout_constraintStart_toEndOf="@+id/prev_button"
-        app:layout_constraintTop_toBottomOf="@+id/send_button_3B" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_89" />
 
     <Button
         android:id="@+id/pause_button"
@@ -184,7 +184,7 @@
         android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/next_button"
         app:layout_constraintStart_toEndOf="@+id/play_button"
-        app:layout_constraintTop_toBottomOf="@+id/send_button_89" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button_3B" />
 
     <Button
         android:id="@+id/next_button"
