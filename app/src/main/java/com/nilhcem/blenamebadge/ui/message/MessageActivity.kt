@@ -100,8 +100,7 @@ class MessageActivity : AppCompatActivity() {
         speed.setSelection(7)//speed8
         wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
         wait.setSelection(1)//sleep
-        timeout.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(5_000L, 6_000L, 7_000L, 8_000L, 9_000L))
-        timeout.setSelection(1)//timeout
+
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -113,6 +112,15 @@ class MessageActivity : AppCompatActivity() {
         checkPermissions()
         if (loop.count() > 0) {
             songtitle.setText(loop[index].nameWithoutExtension)
+
+            timeout.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
+        }
+
+        send.setOnClickListener {
+            send_BF.isEnabled = true
+            send_89.isEnabled = true
+            send_3B.isEnabled = true
+            send_CD.isEnabled = true
         }
 
         send_BF.setOnClickListener {
@@ -144,15 +152,6 @@ class MessageActivity : AppCompatActivity() {
             presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD)
         }
 
-        prev_bt.setOnClickListener {
-            if (index > 0)
-            {
-                index -= 1
-            }
-            if (loop.count() > 0) {
-                songtitle.setText(loop[index].nameWithoutExtension)
-            }
-        }
         play_bt.setOnClickListener {
             val applicationContext: Activity = this
             if (mediaPlayer != null) {
@@ -172,10 +171,50 @@ class MessageActivity : AppCompatActivity() {
             }
         }
         pause_bt.setOnClickListener {
-            send_BF.isEnabled = true
-            send_89.isEnabled = true
-            send_3B.isEnabled = true
-            send_CD.isEnabled = true
+            if (mediaPlayer != null) {
+                if (mediaPlayer!!.isPlaying())
+                {
+                    mediaPlayer!!.pause()
+                }
+                else
+                {
+                    mediaPlayer!!.start()
+                }
+            }
+        }
+        stop_bt.setOnClickListener {
+            val mp = mediaPlayer
+            if (mp != null) {
+                mp.setVolume(l, r)
+                while ( r > 0 || l > 0)
+                {
+                    l -= 0.05F
+                    r -= 0.05F
+                    l = max(l, 0.0F)
+                    r = max(r,0.0F)
+                    mp.setVolume(l, r)
+                    Thread.sleep(250)
+                }
+                mp!!.stop()
+                // after stopping the mediaplayer instance
+                // it is again need to be prepared
+                // for the next instance of playback
+                mp!!.prepare()
+                l = 1.0F
+                r = 1.0F
+                mp!!.setVolume(l, r)
+            }
+        }
+
+        prev_bt.setOnClickListener {
+            if (index > 0)
+            {
+                index -= 1
+            }
+            if (loop.count() > 0) {
+                songtitle.setText(loop[index].nameWithoutExtension)
+                timeout.setSelection(index)
+            }
         }
         next_bt.setOnClickListener {
             if (index < loop.count()-1)
@@ -184,8 +223,10 @@ class MessageActivity : AppCompatActivity() {
             }
             if (loop.count() > 0) {
                 songtitle.setText(loop[index].nameWithoutExtension)
+                timeout.setSelection(index)
             }
         }
+
         fadeL_bt.setOnClickListener {
             val mp = mediaPlayer
             if (mp != null) {
@@ -217,29 +258,8 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         }
-        stop_bt.setOnClickListener {
-            val mp = mediaPlayer
-            if (mp != null) {
-                mp.setVolume(l, r)
-                while ( r > 0 || l > 0)
-                {
-                    l -= 0.05F
-                    r -= 0.05F
-                    l = max(l, 0.0F)
-                    r = max(r,0.0F)
-                    mp.setVolume(l, r)
-                    Thread.sleep(250)
-                }
-                mp!!.stop()
-                // after stopping the mediaplayer instance
-                // it is again need to be prepared
-                // for the next instance of playback
-                mp!!.prepare()
-                l = 1.0F
-                r = 1.0F
-                mp!!.setVolume(l, r)
-            }
-        }
+
+
         reset_bt.setOnClickListener {
             l = 1.0F
             r = 1.0F
