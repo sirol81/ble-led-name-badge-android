@@ -46,7 +46,7 @@ class MessageActivity : AppCompatActivity() {
     private val mode: Spinner by bindView(R.id.mode)
     private val timeout: Spinner by bindView(R.id.timeout)
     private val wait: Spinner by bindView(R.id.waiting)
-    private val send: Button by bindView(R.id.send_button_ALL)
+    private val clear: Button by bindView(R.id.send_button_ALL)
     val send_BF: Button by bindView(R.id.send_button_BF)
     val send_89: Button by bindView(R.id.send_button_89)
     val send_3B: Button by bindView(R.id.send_button_3B)
@@ -126,7 +126,7 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-        send.setOnClickListener {
+        clear.setOnClickListener {
             send_BF.isEnabled = true
             send_89.isEnabled = true
             send_3B.isEnabled = true
