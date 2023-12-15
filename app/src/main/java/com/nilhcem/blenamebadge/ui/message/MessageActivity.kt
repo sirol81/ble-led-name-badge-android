@@ -16,7 +16,9 @@ import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
 import com.nilhcem.blenamebadge.core.android.log.Timber
@@ -26,8 +28,9 @@ import com.nilhcem.blenamebadge.device.model.Message
 import com.nilhcem.blenamebadge.device.model.Mode
 import com.nilhcem.blenamebadge.device.model.Speed
 import java.io.File
-import java.lang.Float.min
 import java.lang.Float.max
+import java.lang.Float.min
+
 
 class MessageActivity : AppCompatActivity() {
 
@@ -37,7 +40,6 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private val content: EditText by bindView(R.id.text_to_send)
-    private val songtitle: TextView by bindView(R.id.song_title)
     private val flash: CheckBox by bindView(R.id.flash)
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
@@ -111,9 +113,17 @@ class MessageActivity : AppCompatActivity() {
 
         checkPermissions()
         if (loop.count() > 0) {
-            songtitle.setText(loop[index].nameWithoutExtension)
+            timeout.setSelection(index)
 
             timeout.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
+            timeout?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    index = position
+                    timeout.setSelection(index)
+                }
+            }
         }
 
         send.setOnClickListener {
@@ -212,7 +222,6 @@ class MessageActivity : AppCompatActivity() {
                 index -= 1
             }
             if (loop.count() > 0) {
-                songtitle.setText(loop[index].nameWithoutExtension)
                 timeout.setSelection(index)
             }
         }
@@ -222,7 +231,6 @@ class MessageActivity : AppCompatActivity() {
                 index += 1
             }
             if (loop.count() > 0) {
-                songtitle.setText(loop[index].nameWithoutExtension)
                 timeout.setSelection(index)
             }
         }
