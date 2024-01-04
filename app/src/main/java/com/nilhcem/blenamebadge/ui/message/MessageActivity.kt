@@ -59,6 +59,7 @@ class MessageActivity : AppCompatActivity() {
     val fadeR_bt: Button by bindView(R.id.fade_right)
     val stop_bt: Button by bindView(R.id.stop_button)
     val reset_bt: Button by bindView(R.id.reset_button)
+    val console: TextView by bindView(R.id.console)
 
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
@@ -138,28 +139,28 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_BF)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_BF, console)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_89)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_89, console)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_3B)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_3B, console)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD, console)
         }
 
         play_bt.setOnClickListener {

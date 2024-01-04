@@ -3,10 +3,13 @@ package com.nilhcem.blenamebadge.device.bluetooth
 import android.bluetooth.*
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
+import android.widget.TextView
+import android.widget.Toast
 import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.core.utils.ByteArrayUtils
 import com.nilhcem.blenamebadge.device.bluetooth.Constants.CHARACTERISTIC_UUID
 import com.nilhcem.blenamebadge.device.bluetooth.Constants.SERVICE_UUID
+import com.nilhcem.blenamebadge.ui.message.MessageActivity
 import java.util.*
 
 class GattClient {
@@ -49,8 +52,12 @@ class GattClient {
         }
     }
 
-    fun writeDataStart(byteData: List<ByteArray>, onFinishWritingDataListener: () -> Unit) {
+    fun writeDataStart(byteData: List<ByteArray>, context: Context, console : TextView, onFinishWritingDataListener: () -> Unit) {
         this.onFinishWritingDataListener = onFinishWritingDataListener
+        val activity : MessageActivity = context as MessageActivity
+        activity.runOnUiThread{
+            console.setText("writeDataStart")
+        }
         messagesToSend.addAll(byteData)
         writeNextData()
     }
@@ -61,7 +68,6 @@ class GattClient {
         } else {
             val data = messagesToSend.pop()
             Timber.e { "Writing: ${ByteArrayUtils.byteArrayToHexString(data)}" }
-
             val characteristic = bluetoothGatt?.getService(SERVICE_UUID)?.getCharacteristic(CHARACTERISTIC_UUID)
             characteristic?.value = data
             bluetoothGatt?.writeCharacteristic(characteristic)
