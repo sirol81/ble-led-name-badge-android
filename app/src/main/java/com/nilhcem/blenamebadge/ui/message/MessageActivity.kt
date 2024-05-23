@@ -60,6 +60,10 @@ class MessageActivity : AppCompatActivity() {
     val stop_bt: Button by bindView(R.id.stop_button)
     val reset_bt: Button by bindView(R.id.reset_button)
     val console: TextView by bindView(R.id.console)
+    val bmp_BF: RadioButton by bindView(R.id.bpm_BF)
+    val bmp_89: RadioButton by bindView(R.id.bpm_89)
+    val bmp_3B: RadioButton by bindView(R.id.bpm_3B)
+    val bmp_CD: RadioButton by bindView(R.id.bpm_CD)
 
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
@@ -132,6 +136,7 @@ class MessageActivity : AppCompatActivity() {
             send_89.isEnabled = true
             send_3B.isEnabled = true
             send_CD.isEnabled = true
+            content.setText("")
         }
 
         send_BF.setOnClickListener {
@@ -139,28 +144,48 @@ class MessageActivity : AppCompatActivity() {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_BF, console)
+            var textToSend = content.text.trim().toString()
+            if (!bmp_BF.isChecked())
+            {//trim bpm
+                textToSend = textToSend.split("_").last()
+            }
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_BF, console)
         }
         send_89.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_89, console)
+            var textToSend = content.text.trim().toString()
+            if (!bmp_89.isChecked())
+            {//trim bpm
+                textToSend = textToSend.split("_").last()
+            }
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_89, console)
         }
         send_3B.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_3B, console)
+            var textToSend = content.text.trim().toString()
+            if (!bmp_3B.isChecked())
+            {//trim bpm
+                textToSend = textToSend.split("_").last()
+            }
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_3B, console)
         }
         send_CD.setOnClickListener {
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(content.text.trim().toString()), content.text.trim().toString(), wait.selectedItem as Long, send_CD, console)
+            var textToSend = content.text.trim().toString()
+            if (!bmp_CD.isChecked())
+            {//trim bpm
+                textToSend = textToSend.split("_").last()
+            }
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
         }
 
         play_bt.setOnClickListener {
