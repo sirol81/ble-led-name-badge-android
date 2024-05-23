@@ -48,7 +48,7 @@ class GattClient {
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             Timber.i { "onCharacteristicWrite" }
             Thread.sleep(wait)
-            writeNextData()
+            writeNextData(null, null)
         }
     }
 
@@ -59,18 +59,30 @@ class GattClient {
             console.setText("writeDataStart")
         }
         messagesToSend.addAll(byteData)
-        writeNextData()
+        writeNextData(context, console)
     }
 
-    fun writeNextData() {
+    fun writeNextData(context: Context?, console : TextView?) {
         if (messagesToSend.isEmpty()) {
             onFinishWritingDataListener?.invoke()
+            if (context != null && console != null) {
+                val activity : MessageActivity = context as MessageActivity
+                activity.runOnUiThread{
+                    console.setText("messagesToSend.isEmpty")
+                }
+            }
         } else {
             val data = messagesToSend.pop()
             Timber.e { "Writing: ${ByteArrayUtils.byteArrayToHexString(data)}" }
             val characteristic = bluetoothGatt?.getService(SERVICE_UUID)?.getCharacteristic(CHARACTERISTIC_UUID)
             characteristic?.value = data
             bluetoothGatt?.writeCharacteristic(characteristic)
+            if (context != null && console != null) {
+                val activity : MessageActivity = context as MessageActivity
+                activity.runOnUiThread{
+                    console.setText("writeCharacteristic")
+                }
+            }
         }
     }
 

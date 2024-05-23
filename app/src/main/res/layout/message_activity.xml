@@ -149,7 +149,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="1dp"
         android:text="@string/prev_button"
         android:textColor="@color/colorGreen"
         android:textSize="20sp"
@@ -164,7 +164,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="1dp"
         android:text="@string/play_button"
         android:textColor="@color/colorWhite"
         android:textSize="20sp"
@@ -179,7 +179,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="1dp"
         android:text="@string/pause_button"
         android:textSize="20sp"
         android:backgroundTint="@color/colorPrimary"
@@ -193,7 +193,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="1dp"
         android:text="@string/next_button"
         android:textColor="@color/colorOrange"
         android:textSize="20sp"
@@ -208,7 +208,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:text="@string/fade_left"
         android:textSize="20sp"
         android:backgroundTint="@color/colorGreen"
@@ -222,7 +222,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:text="@string/stop_button"
         android:textSize="20sp"
         android:backgroundTint="@color/colorPrimaryDark"
@@ -236,7 +236,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:text="@string/reset_button"
         android:textSize="20sp"
         android:backgroundTint="@color/colorAccent"
@@ -250,7 +250,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:text="@string/fade_right"
         android:textSize="20sp"
         android:backgroundTint="@color/colorOrange"
@@ -260,14 +260,41 @@
 
     <TextView
         android:id="@+id/console"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:inputType="text"
         android:text="CONSOLE"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/radio_buttons"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fade_right" />
+        app:layout_constraintTop_toBottomOf="@+id/fade_left" />
+
+    <RadioGroup
+        android:id="@+id/radio_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/fade_right"
+        app:layout_constraintStart_toEndOf="@+id/console"
+        app:layout_constraintEnd_toEndOf="parent">
+        <RadioButton android:id="@+id/bpm_BF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"/>
+        <RadioButton android:id="@+id/bpm_89"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"/>
+        <RadioButton android:id="@+id/bpm_3B"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"/>
+        <RadioButton android:id="@+id/bpm_CD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"/>
+    </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

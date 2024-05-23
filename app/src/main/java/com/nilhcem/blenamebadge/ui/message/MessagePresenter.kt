@@ -15,17 +15,17 @@ import com.nilhcem.blenamebadge.device.model.DataToSend
 class MessagePresenter {
     private var gattClient = GattClient()
 
-    fun sendSingleMessage(context: Context, dataToSend: DataToSend, text: String, sleep_time: Long, button: Button, console : TextView) {
+    fun sendSingleMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, button: Button, console : TextView) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        sendBT(context, byteData, text, sleep_time, button.getTag().toString(), button, console)
+        sendBT(context, byteData, sleep_time, button.getTag().toString(), button, console)
     }
 
     fun onPause() {
         gattClient.stopClient()
     }
 
-    private fun sendBT(context: Context, byteData: List<ByteArray>, text: String, sleep: Long, deviceaddress : String, button : Button, console : TextView) {
+    private fun sendBT(context: Context, byteData: List<ByteArray>, sleep: Long, deviceaddress : String, button : Button, console : TextView) {
         val activity : MessageActivity = context as MessageActivity
         gattClient = GattClient()
         gattClient.startClient(context, deviceaddress, sleep) { onConnected ->
@@ -44,7 +44,7 @@ class MessagePresenter {
             else
             {//some kind of error
                 console.setText("onConnected FALSE #" + button.getText())
-                sendBT(context, byteData, text, sleep, deviceaddress, button, console)
+                //sendBT(context, byteData, text, sleep, deviceaddress, button, console)
             }
         }
     }
