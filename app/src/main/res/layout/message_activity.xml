@@ -260,7 +260,7 @@
 
     <TextView
         android:id="@+id/console"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:inputType="text"
@@ -278,7 +278,7 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/fade_right"
         app:layout_constraintStart_toEndOf="@+id/console"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toStartOf="@+id/rb_label">
         <RadioButton android:id="@+id/bpm_BF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -296,5 +296,17 @@
             android:layout_height="wrap_content"
             android:text="4"/>
     </RadioGroup>
+
+    <TextView
+        android:id="@+id/rb_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:inputType="text"
+        android:text="Send BPM"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/radio_buttons"
+        app:layout_constraintTop_toBottomOf="@+id/fade_left" />
 
 </android.support.constraint.ConstraintLayout>

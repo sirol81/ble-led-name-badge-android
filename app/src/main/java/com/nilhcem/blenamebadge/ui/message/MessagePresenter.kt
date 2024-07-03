@@ -2,6 +2,8 @@ package com.nilhcem.blenamebadge.ui.message
 
 import android.app.PendingIntent.getActivity
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -38,6 +40,9 @@ class MessagePresenter {
                         button.isEnabled = false
                         Toast.makeText(context, "Sent to BT #" + button.getText() + " : OK", Toast.LENGTH_SHORT).show()
                         console.setText("Sent to BT #" + button.getText() + " : OK")
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            button.isEnabled = true
+                        }, 9000)
                     }
                 }
             }
