@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import com.nilhcem.blenamebadge.Metronome
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
 import com.nilhcem.blenamebadge.core.android.log.Timber
@@ -137,6 +138,7 @@ class MessageActivity : AppCompatActivity() {
             send_3B.isEnabled = true
             send_CD.isEnabled = true
             content.setText("")
+            Metronome.stop()
         }
 
         send_BF.setOnClickListener {
@@ -148,6 +150,11 @@ class MessageActivity : AppCompatActivity() {
             if (!bmp_BF.isChecked())
             {//trim bpm
                 textToSend = textToSend.split("_").last()
+            }
+            else
+            {//metronome
+                Metronome.stop()
+                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
             }
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_BF, console)
         }
@@ -161,6 +168,11 @@ class MessageActivity : AppCompatActivity() {
             {//trim bpm
                 textToSend = textToSend.split("_").last()
             }
+            else
+            {//metronome
+                Metronome.stop()
+                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
+            }
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_89, console)
         }
         send_3B.setOnClickListener {
@@ -173,6 +185,11 @@ class MessageActivity : AppCompatActivity() {
             {//trim bpm
                 textToSend = textToSend.split("_").last()
             }
+            else
+            {//metronome
+                Metronome.stop()
+                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
+            }
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_3B, console)
         }
         send_CD.setOnClickListener {
@@ -184,6 +201,11 @@ class MessageActivity : AppCompatActivity() {
             if (!bmp_CD.isChecked())
             {//trim bpm
                 textToSend = textToSend.split("_").last()
+            }
+            else
+            {//metronome
+                Metronome.stop()
+                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
             }
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
         }
