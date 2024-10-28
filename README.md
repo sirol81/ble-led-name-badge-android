@@ -12,3 +12,6 @@ Original Blog post:
 
 Item purchased (be sure to choose BT version)
 https://www.aliexpress.com/item/1005004921988054.html
+
+some other useful things here from FOSSASIA
+https://github.com/orgs/fossasia/repositories?q=badgemagic
