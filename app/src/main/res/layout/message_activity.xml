@@ -23,12 +23,12 @@
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
         android:contentDescription="WAITING"
-        app:layout_constraintEnd_toStartOf="@+id/timeout"
+        app:layout_constraintEnd_toStartOf="@+id/songtitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
 
     <Spinner
-        android:id="@+id/timeout"
+        android:id="@+id/songtitle"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
@@ -54,7 +54,7 @@
         android:layout_marginTop="0dp"
         app:layout_constraintEnd_toStartOf="@+id/marquee"
         app:layout_constraintStart_toEndOf="@+id/speed"
-        app:layout_constraintTop_toBottomOf="@+id/timeout" />
+        app:layout_constraintTop_toBottomOf="@+id/songtitle" />
 
     <CheckBox
         android:id="@+id/flash"
@@ -63,7 +63,7 @@
         android:layout_marginTop="0dp"
         android:text="@string/flash"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/timeout"
+        app:layout_constraintStart_toEndOf="@+id/songtitle"
         app:layout_constraintTop_toBottomOf="@+id/text_to_send" />
 
     <CheckBox
@@ -86,7 +86,7 @@
         android:layout_marginLeft="0dp"
         android:text="@string/send_button"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/timeout"
+        app:layout_constraintStart_toEndOf="@+id/songtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_to_send"
         />

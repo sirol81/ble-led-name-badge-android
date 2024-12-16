@@ -46,7 +46,7 @@ class MessageActivity : AppCompatActivity() {
     private val marquee: CheckBox by bindView(R.id.marquee)
     private val speed: Spinner by bindView(R.id.speed)
     private val mode: Spinner by bindView(R.id.mode)
-    private val timeout: Spinner by bindView(R.id.timeout)
+    private val songTitle: Spinner by bindView(R.id.songtitle)
     private val wait: Spinner by bindView(R.id.waiting)
     private val clear: Button by bindView(R.id.send_button_ALL)
     val send_BF: Button by bindView(R.id.send_button_BF)
@@ -110,25 +110,28 @@ class MessageActivity : AppCompatActivity() {
         wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
         wait.setSelection(0)//sleep
 
-
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        send_BF.setTag(addresses[0])
-        send_89.setTag(addresses[1])
-        send_3B.setTag(addresses[2])
-        send_CD.setTag(addresses[3])
+        bmp_BF.setTag(addresses[0])
+        bmp_89.setTag(addresses[1])
+        bmp_3B.setTag(addresses[2])
+        bmp_CD.setTag(addresses[3])
+        send_BF.setTag(bmp_BF)
+        send_89.setTag(bmp_89)
+        send_3B.setTag(bmp_3B)
+        send_CD.setTag(bmp_CD)
 
         checkPermissions()
         if (loop.count() > 0) {
-            timeout.setSelection(index)
+            songTitle.setSelection(index)
 
-            timeout.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
-            timeout?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            songTitle.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
+            songTitle?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     index = position
-                    timeout.setSelection(index)
+                    songTitle.setSelection(index)
                 }
             }
         }
@@ -142,78 +145,32 @@ class MessageActivity : AppCompatActivity() {
             Metronome.stop()
         }
 
-        send_BF.setOnClickListener {
+        val commonCLickListener = View.OnClickListener { view ->
             if (content.text.isEmpty()) {
                 //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
             var textToSend = content.text.trim().toString()
-            if (!bmp_BF.isChecked())
+            val rb = view.getTag() as RadioButton
+            if (!rb.isChecked())
             {//trim bpm
                 textToSend = textToSend.split("_").last()
             }
             else
             {//metronome
                 Metronome.stop()
-                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
+                if (textToSend.contains("_"))
+                {
+                    Metronome.start(this, textToSend.split("_").first().toLong(), clear)
+                }
             }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_BF, console)
-        }
-        send_89.setOnClickListener {
-            if (content.text.isEmpty()) {
-                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
-                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
-            }
-            var textToSend = content.text.trim().toString()
-            if (!bmp_89.isChecked())
-            {//trim bpm
-                textToSend = textToSend.split("_").last()
-            }
-            else
-            {//metronome
-                Metronome.stop()
-                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
-            }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_89, console)
-        }
-        send_3B.setOnClickListener {
-            if (content.text.isEmpty()) {
-                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
-                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
-            }
-            var textToSend = content.text.trim().toString()
-            if (!bmp_3B.isChecked())
-            {//trim bpm
-                textToSend = textToSend.split("_").last()
-            }
-            else
-            {//metronome
-                Metronome.stop()
-                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
-            }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_3B, console)
-        }
-        send_CD.setOnClickListener {
-            if (content.text.isEmpty()) {
-                //presenter.sendBitmap(this, BitmapFactory.decodeResource(resources, R.drawable.mix2))
-                content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
-            }
-            var textToSend = content.text.trim().toString()
-            if (!bmp_CD.isChecked())
-            {//trim bpm
-                textToSend = textToSend.split("_").last()
-            }
-            else
-            {//metronome
-                Metronome.stop()
-                Metronome.start(this, textToSend.split("_").first().toLong(), clear)
-            }
-            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
+            presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, view as Button, console)
         }
 
-        val tintChanger = Button.OnClickListener { btn ->
-            println("View with id=${btn.id} clicked")
-        }
+        send_BF.setOnClickListener(commonCLickListener)
+        send_89.setOnClickListener(commonCLickListener)
+        send_3B.setOnClickListener(commonCLickListener)
+        send_CD.setOnClickListener(commonCLickListener)
 
         play_bt.setOnClickListener {
             val applicationContext: Activity = this
@@ -275,7 +232,7 @@ class MessageActivity : AppCompatActivity() {
                 index -= 1
             }
             if (loop.count() > 0) {
-                timeout.setSelection(index)
+                songTitle.setSelection(index)
             }
         }
         next_bt.setOnClickListener {
@@ -284,7 +241,7 @@ class MessageActivity : AppCompatActivity() {
                 index += 1
             }
             if (loop.count() > 0) {
-                timeout.setSelection(index)
+                songTitle.setSelection(index)
             }
         }
 
@@ -333,7 +290,7 @@ class MessageActivity : AppCompatActivity() {
             while (true) {
                 if (!content.text.isEmpty()) {
                     this.runOnUiThread{
-                        presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, console)
+                        presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, console, addresses, 10_000L)
                     }
                     Thread.sleep(2000)
                 }

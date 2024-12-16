@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import com.nilhcem.blenamebadge.R
@@ -22,23 +23,24 @@ class MessagePresenter {
     fun sendSingleMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, button: Button, console : TextView) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        sendBT(context, byteData, sleep_time, button.getTag().toString(), button, console)
+        val rb = button.getTag() as RadioButton
+        sendBT(context, byteData, sleep_time, rb.getTag().toString(), button, console)
     }
 
-    fun sendMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, console : TextView) {
+    fun sendMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, console : TextView, addresses: MutableList<String>, timeout: Long) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-        sendBytes(context, byteData, sleep_time, addresses, console)
+        sendBytes(context, byteData, sleep_time, addresses, console, timeout)
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, sleep: Long, addresses : MutableList<String>, console : TextView) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, sleep: Long, addresses : MutableList<String>, console : TextView, timeout: Long) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
         val activity : MessageActivity = context as MessageActivity
+        scanHelper.timeout = timeout
         scanHelper.startLeScan { device ->
             if (device == null) {
                 Timber.e { "Scan could not find any device" }
-                Toast.makeText(context, "BT non trovati" , Toast.LENGTH_LONG).show()
+                //Toast.makeText(context, "BT non trovati" , Toast.LENGTH_SHORT).show()
             } else {
                 if (addresses.contains(device.address))
                 {

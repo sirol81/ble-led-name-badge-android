@@ -9,10 +9,7 @@ import no.nordicsemi.android.support.v18.scanner.*
 
 class ScanHelper {
 
-    companion object {
-        private val SCAN_TIMEOUT_MS = 10_000L
-    }
-
+    public var timeout = 10_000L
     private var isScanning = false
     private var onDeviceFoundCallback: ((BluetoothDevice?) -> Unit)? = null
 
@@ -59,7 +56,7 @@ class ScanHelper {
         }
 
         // Stops scanning after a pre-defined scan period.
-        stopScanHandler.postDelayed(stopScanRunnable, SCAN_TIMEOUT_MS)
+        stopScanHandler.postDelayed(stopScanRunnable, timeout)
     }
 
     fun stopLeScan() {
