@@ -31,6 +31,7 @@ import com.nilhcem.blenamebadge.device.model.Speed
 import java.io.File
 import java.lang.Float.max
 import java.lang.Float.min
+import kotlin.concurrent.thread
 
 
 class MessageActivity : AppCompatActivity() {
@@ -107,7 +108,7 @@ class MessageActivity : AppCompatActivity() {
         speed.adapter = ArrayAdapter<String>(this, spinnerItem, Speed.values().mapIndexed { index, _ -> (index + 1).toString() })
         speed.setSelection(7)//speed8
         wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
-        wait.setSelection(1)//sleep
+        wait.setSelection(0)//sleep
 
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -210,6 +211,10 @@ class MessageActivity : AppCompatActivity() {
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
         }
 
+        val tintChanger = Button.OnClickListener { btn ->
+            println("View with id=${btn.id} clicked")
+        }
+
         play_bt.setOnClickListener {
             val applicationContext: Activity = this
             if (mediaPlayer != null) {
@@ -217,10 +222,10 @@ class MessageActivity : AppCompatActivity() {
             }
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
-                        AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .build()
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
                 )
                 setDataSource(applicationContext, Uri.fromFile(loop[index]))
                 setVolume(l, r)
@@ -321,6 +326,17 @@ class MessageActivity : AppCompatActivity() {
             r = 1.0F
             if (mediaPlayer != null) {
                 mediaPlayer!!.setVolume(l, r)
+            }
+        }
+
+        thread(name = "always_looping") {
+            while (true) {
+                if (!content.text.isEmpty()) {
+                    this.runOnUiThread{
+                        presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, console)
+                    }
+                    Thread.sleep(2000)
+                }
             }
         }
     }
