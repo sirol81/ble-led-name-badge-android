@@ -16,6 +16,8 @@ import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
@@ -32,7 +34,6 @@ import java.io.File
 import java.lang.Float.max
 import java.lang.Float.min
 import kotlin.concurrent.thread
-
 
 class MessageActivity : AppCompatActivity() {
 
@@ -70,6 +71,7 @@ class MessageActivity : AppCompatActivity() {
     private val presenter by lazy { MessagePresenter() }
     lateinit var clipboardManager : ClipboardManager
 
+    var lastEdit: Long = java.time.Instant.now().toEpochMilli()
     val loop: ArrayList<File> = ArrayList<File>()
     var mediaPlayer: MediaPlayer? = null
     var index = 0
@@ -277,7 +279,6 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-
         reset_bt.setOnClickListener {
             l = 1.0F
             r = 1.0F
@@ -286,10 +287,22 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
+        content.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                lastEdit = java.time.Instant.now().toEpochMilli()
+            }
+        })
+
         thread(name = "always_looping") {
             while (true) {
-                val timeout = 10_000L
-                if (!content.text.isEmpty()) {
+                val timeout: Long = 3000
+                val epochNow: Long = java.time.Instant.now().toEpochMilli()
+                val timeDiff = epochNow - lastEdit
+                if (!content.text.isEmpty() && timeDiff > 1500) {
                     var textToSend = content.text.trim().toString()
                     if (textToSend.contains("_"))
                     {//trim bpm
@@ -299,6 +312,10 @@ class MessageActivity : AppCompatActivity() {
                         presenter.sendMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, timeout)
                     }
                     Thread.sleep(timeout)
+                }
+                else
+                {
+                    Thread.sleep(1000)
                 }
             }
         }
