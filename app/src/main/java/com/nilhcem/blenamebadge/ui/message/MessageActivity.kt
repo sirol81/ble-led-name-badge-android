@@ -288,11 +288,17 @@ class MessageActivity : AppCompatActivity() {
 
         thread(name = "always_looping") {
             while (true) {
+                val timeout = 10_000L
                 if (!content.text.isEmpty()) {
-                    this.runOnUiThread{
-                        presenter.sendMessage(this, convertToDeviceDataModel(content.text.trim().toString()), wait.selectedItem as Long, console, addresses, 10_000L)
+                    var textToSend = content.text.trim().toString()
+                    if (textToSend.contains("_"))
+                    {//trim bpm
+                        textToSend = textToSend.split("_").last()
                     }
-                    Thread.sleep(2000)
+                    this.runOnUiThread{
+                        presenter.sendMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, timeout)
+                    }
+                    Thread.sleep(timeout)
                 }
             }
         }
