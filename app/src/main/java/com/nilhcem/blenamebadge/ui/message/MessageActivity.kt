@@ -34,6 +34,7 @@ import java.io.File
 import java.lang.Float.max
 import java.lang.Float.min
 import kotlin.concurrent.thread
+import kotlinx.coroutines.*
 
 class MessageActivity : AppCompatActivity() {
 
@@ -128,7 +129,7 @@ class MessageActivity : AppCompatActivity() {
             songTitle.setSelection(index)
 
             songTitle.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
-            songTitle?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            songTitle.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -217,14 +218,14 @@ class MessageActivity : AppCompatActivity() {
                     mp.setVolume(l, r)
                     Thread.sleep(250)
                 }
-                mp!!.stop()
+                mp.stop()
                 // after stopping the mediaplayer instance
                 // it is again need to be prepared
                 // for the next instance of playback
-                mp!!.prepare()
+                mp.prepare()
                 l = 1.0F
                 r = 1.0F
-                mp!!.setVolume(l, r)
+                mp.setVolume(l, r)
             }
         }
 
@@ -319,6 +320,26 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         }
+
+        thread(name = "sirol_loop") {
+            while (true) {
+                corout()
+                val loop_frequence: Long = 1000
+                //try sending data on  bluetooth device #1
+                //try sending data on  bluetooth device #2
+                //try sending data on  bluetooth device #3
+                //try sending data on  bluetooth device #4
+                Thread.sleep(loop_frequence)
+            }
+        }
+    }
+
+    fun corout() = runBlocking { // this: CoroutineScope
+        launch { // launch a new coroutine and continue
+            delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
+            println("World!") // print after delay
+        }
+        println("Hello") // main coroutine continues while a previous one is delayed
     }
 
     override fun onResume() {

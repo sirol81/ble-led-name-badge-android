@@ -35,7 +35,6 @@ class MessagePresenter {
 
     private fun sendBytes(context: Context, byteData: List<ByteArray>, sleep: Long, addresses : MutableList<String>, console : TextView, timeout: Long) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
-        val activity : MessageActivity = context as MessageActivity
         scanHelper.timeout = timeout
         scanHelper.startLeScan { device ->
             if (device == null) {
