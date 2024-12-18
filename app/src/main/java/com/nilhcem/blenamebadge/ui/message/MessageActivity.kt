@@ -79,6 +79,7 @@ class MessageActivity : AppCompatActivity() {
     var l:Float = 1.0F
     var r:Float = 1.0F
     val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
+    val applicationContext: Activity = this
 
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -177,7 +178,6 @@ class MessageActivity : AppCompatActivity() {
         send_CD.setOnClickListener(commonCLickListener)
 
         play_bt.setOnClickListener {
-            val applicationContext: Activity = this
             if (mediaPlayer != null) {
                 mediaPlayer!!.stop()
             }
@@ -331,14 +331,18 @@ class MessageActivity : AppCompatActivity() {
     suspend fun main_coroutine() = coroutineScope {
         withContext(Dispatchers.IO) {
             val delay_amount = 1000L
+            val scanhelperTimeout: Long = 3000
             while(true){//with a while(true) loop inside
                 val epochNow: Long = java.time.Instant.now().toEpochMilli()
                 val timeDiff = epochNow - lastEdit
                 //if text is not empty and not edited recently
                 if (!content.text.isEmpty() && timeDiff > 1000) {
+                    var textToSend = content.text.trim().toString()
                     //look for bluetooth devices
                     val btscan = launch {
                         //if bluetooth device is one of the 4 known devices, send text
+                        println(textToSend)
+                        presenter.sendMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, scanhelperTimeout)
                     }
 
                     //try to send text do bt device #1 and wait it to end
@@ -350,24 +354,28 @@ class MessageActivity : AppCompatActivity() {
                     //try to send text do bt device #2 and wait it to end
                     val bt2 = launch {
                         println("BT2")
+
                         delay(500L)
                     }
                     bt2.join()
                     //try to send text do bt device #3 and wait it to end
                     val bt3 = launch {
                         println("BT3")
+
                         delay(500L)
                     }
                     bt3.join()
                     //try to send text do bt device #4 and wait it to end
                     val bt4 = launch {
                         println("BT4")
+
                         delay(500L)
                     }
                     bt4.join()
                     println("Tried to send all 4 messages")
+
                     btscan.cancelAndJoin()
-                    println("Done")
+                    println("Loop ended. Start again from beginning")
                 }
                 //delay
                 delay(delay_amount)
