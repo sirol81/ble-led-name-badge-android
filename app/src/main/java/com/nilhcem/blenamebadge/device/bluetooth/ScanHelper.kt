@@ -2,6 +2,7 @@ package com.nilhcem.blenamebadge.device.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import android.os.Handler
+import android.os.Looper
 import android.os.ParcelUuid
 import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.device.bluetooth.Constants.SERVICE_UUID
@@ -14,7 +15,7 @@ class ScanHelper {
     private var onDeviceFoundCallback: ((BluetoothDevice?) -> Unit)? = null
 
     private val scanner by lazy { BluetoothLeScannerCompat.getScanner() }
-    private val stopScanHandler = Handler()
+    private val stopScanHandler = Handler(Looper.getMainLooper())
     private val stopScanRunnable = Runnable {
         Timber.i { "No devices found" }
         stopLeScan()

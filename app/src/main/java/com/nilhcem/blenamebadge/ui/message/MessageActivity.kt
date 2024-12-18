@@ -342,33 +342,38 @@ class MessageActivity : AppCompatActivity() {
                     val btscan = launch {
                         //if bluetooth device is one of the 4 known devices, send text
                         println(textToSend)
+                        if (textToSend.contains("_"))
+                        {//trim bpm
+                            textToSend = textToSend.split("_").last()
+                        }
                         presenter.sendMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, scanhelperTimeout)
                     }
 
                     //try to send text do bt device #1 and wait it to end
                     val bt1 = launch {
                         println("BT1")
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_BF, console)
                         delay(500L)
                     }
                     bt1.join()
                     //try to send text do bt device #2 and wait it to end
                     val bt2 = launch {
                         println("BT2")
-
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_89, console)
                         delay(500L)
                     }
                     bt2.join()
                     //try to send text do bt device #3 and wait it to end
                     val bt3 = launch {
                         println("BT3")
-
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_3B, console)
                         delay(500L)
                     }
                     bt3.join()
                     //try to send text do bt device #4 and wait it to end
                     val bt4 = launch {
                         println("BT4")
-
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
                         delay(500L)
                     }
                     bt4.join()
@@ -377,8 +382,12 @@ class MessageActivity : AppCompatActivity() {
                     btscan.cancelAndJoin()
                     println("Loop ended. Start again from beginning")
                 }
-                //delay
-                delay(delay_amount)
+                else
+                {
+                    println("No text to send")
+                    //delay
+                    delay(delay_amount)
+                }
             }
         }
     }
