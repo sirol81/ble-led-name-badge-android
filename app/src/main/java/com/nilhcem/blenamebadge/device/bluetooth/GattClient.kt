@@ -3,13 +3,10 @@ package com.nilhcem.blenamebadge.device.bluetooth
 import android.bluetooth.*
 import android.content.Context
 import android.content.Context.BLUETOOTH_SERVICE
-import android.widget.TextView
-import android.widget.Toast
 import com.nilhcem.blenamebadge.core.android.log.Timber
 import com.nilhcem.blenamebadge.core.utils.ByteArrayUtils
 import com.nilhcem.blenamebadge.device.bluetooth.Constants.CHARACTERISTIC_UUID
 import com.nilhcem.blenamebadge.device.bluetooth.Constants.SERVICE_UUID
-import com.nilhcem.blenamebadge.ui.message.MessageActivity
 import java.util.*
 
 class GattClient {
@@ -39,7 +36,7 @@ class GattClient {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 onConnectedListener?.invoke(true)
             } else {
-                Timber.w { "onServicesDiscovered received: " + status }
+                Timber.w { "onServicesDiscovered received: $status" }
                 stopClient()
                 onConnectedListener?.invoke(false)
             }
@@ -48,41 +45,25 @@ class GattClient {
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             Timber.i { "onCharacteristicWrite" }
             Thread.sleep(wait)
-            writeNextData(null, null)
+            writeNextData()
         }
     }
 
-    fun writeDataStart(byteData: List<ByteArray>, context: Context, console : TextView, onFinishWritingDataListener: () -> Unit) {
+    fun writeDataStart(byteData: List<ByteArray>, onFinishWritingDataListener: () -> Unit) {
         this.onFinishWritingDataListener = onFinishWritingDataListener
-        val activity : MessageActivity = context as MessageActivity
-        activity.runOnUiThread{
-            console.setText("writeDataStart")
-        }
         messagesToSend.addAll(byteData)
-        writeNextData(context, console)
+        writeNextData()
     }
 
-    fun writeNextData(context: Context?, console : TextView?) {
+    fun writeNextData() {
         if (messagesToSend.isEmpty()) {
             onFinishWritingDataListener?.invoke()
-            if (context != null && console != null) {
-                val activity : MessageActivity = context as MessageActivity
-                activity.runOnUiThread{
-                    console.setText("messagesToSend.isEmpty")
-                }
-            }
         } else {
             val data = messagesToSend.pop()
             Timber.e { "Writing: ${ByteArrayUtils.byteArrayToHexString(data)}" }
             val characteristic = bluetoothGatt?.getService(SERVICE_UUID)?.getCharacteristic(CHARACTERISTIC_UUID)
             characteristic?.value = data
             bluetoothGatt?.writeCharacteristic(characteristic)
-            if (context != null && console != null) {
-                val activity : MessageActivity = context as MessageActivity
-                activity.runOnUiThread{
-                    console.setText("writeCharacteristic")
-                }
-            }
         }
     }
 

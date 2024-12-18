@@ -27,19 +27,18 @@ class MessagePresenter {
         sendBT(context, byteData, sleep_time, rb.getTag().toString(), button, console)
     }
 
-    fun sendMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, console : TextView, addresses: MutableList<String>, timeout: Long) {
+    fun sendMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, addresses: MutableList<String>, timeout: Long) {
         Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
-        sendBytes(context, byteData, sleep_time, addresses, console, timeout)
+        sendBytes(context, byteData, sleep_time, addresses, timeout)
     }
 
-    private fun sendBytes(context: Context, byteData: List<ByteArray>, sleep: Long, addresses : MutableList<String>, console : TextView, timeout: Long) {
+    private fun sendBytes(context: Context, byteData: List<ByteArray>, sleep: Long, addresses : MutableList<String>, /*console : TextView,*/ timeout: Long) {
         Timber.i { "ByteData: ${byteData.map { ByteArrayUtils.byteArrayToHexString(it) }}" }
         scanHelper.timeout = timeout
         scanHelper.startLeScan { device ->
             if (device == null) {
                 Timber.e { "Scan could not find any device" }
-                //Toast.makeText(context, "BT non trovati" , Toast.LENGTH_SHORT).show()
             } else {
                 if (addresses.contains(device.address))
                 {
@@ -49,12 +48,36 @@ class MessagePresenter {
 
                     gattClient.startClient(context, device.address, sleep) { onConnected ->
                         if (onConnected) {
-                            gattClient.writeDataStart(byteData, context, console) {
+                            gattClient.writeDataStart(byteData) {
                                 Timber.i { "Data sent to $device" }
                                 gattClient.stopClient()
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun foundDevice(timeout: Long) :String
+    {
+        var deviceAddress : String = ""
+        scanHelper.timeout = timeout
+        scanHelper.startLeScan { device ->
+            if (device == null) {
+                Timber.e { "Scan could not find any device" }
+            } else {
+                Timber.e { "Device found: $device" }
+                deviceAddress = device.address
+            }
+        }
+        return deviceAddress
+    }
+    fun sendToDevice(context: Context, byteData: List<ByteArray>, sleep: Long, address: String) {
+        gattClient.startClient(context, address, sleep) { onConnected ->
+            if (onConnected) {
+                gattClient.writeDataStart(byteData) {
+                    gattClient.stopClient()
                 }
             }
         }
@@ -70,7 +93,7 @@ class MessagePresenter {
         gattClient.startClient(context, deviceaddress, sleep) { onConnected ->
             if (onConnected) {
                 console.setText("onConnected TRUE #" + button.getText())
-                gattClient.writeDataStart(byteData, context, console) {
+                gattClient.writeDataStart(byteData) {
                     gattClient.stopClient()
                     console.setText("stopClient")
                     activity.runOnUiThread{
@@ -86,7 +109,6 @@ class MessagePresenter {
             else
             {//some kind of error
                 console.setText("onConnected FALSE #" + button.getText())
-                //sendBT(context, byteData, text, sleep, deviceaddress, button, console)
             }
         }
     }

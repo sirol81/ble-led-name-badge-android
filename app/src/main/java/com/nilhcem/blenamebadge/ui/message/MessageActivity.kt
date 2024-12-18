@@ -20,7 +20,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
 import com.nilhcem.blenamebadge.Metronome
 import com.nilhcem.blenamebadge.R
 import com.nilhcem.blenamebadge.core.android.ext.hideKeyboard
@@ -51,35 +50,35 @@ class MessageActivity : AppCompatActivity() {
     private val songTitle: Spinner by bindView(R.id.songtitle)
     private val wait: Spinner by bindView(R.id.waiting)
     private val clear: Button by bindView(R.id.send_button_ALL)
-    val send_BF: Button by bindView(R.id.send_button_BF)
-    val send_89: Button by bindView(R.id.send_button_89)
-    val send_3B: Button by bindView(R.id.send_button_3B)
-    val send_CD: Button by bindView(R.id.send_button_CD)
-    val prev_bt: Button by bindView(R.id.prev_button)
-    val play_bt: Button by bindView(R.id.play_button)
-    val pause_bt: Button by bindView(R.id.pause_button)
-    val next_bt: Button by bindView(R.id.next_button)
-    val fadeL_bt: Button by bindView(R.id.fade_left)
-    val fadeR_bt: Button by bindView(R.id.fade_right)
-    val stop_bt: Button by bindView(R.id.stop_button)
-    val reset_bt: Button by bindView(R.id.reset_button)
-    val console: TextView by bindView(R.id.console)
-    val bmp_BF: RadioButton by bindView(R.id.bpm_BF)
-    val bmp_89: RadioButton by bindView(R.id.bpm_89)
-    val bmp_3B: RadioButton by bindView(R.id.bpm_3B)
-    val bmp_CD: RadioButton by bindView(R.id.bpm_CD)
+    private val sendBF: Button by bindView(R.id.send_button_BF)
+    private val send89: Button by bindView(R.id.send_button_89)
+    private val send3B: Button by bindView(R.id.send_button_3B)
+    private val sendCD: Button by bindView(R.id.send_button_CD)
+    private val prevBT: Button by bindView(R.id.prev_button)
+    private val playBT: Button by bindView(R.id.play_button)
+    private val pauseBT: Button by bindView(R.id.pause_button)
+    private val nextBT: Button by bindView(R.id.next_button)
+    private val fadeLBT: Button by bindView(R.id.fade_left)
+    private val fadeRBT: Button by bindView(R.id.fade_right)
+    private val stopBT: Button by bindView(R.id.stop_button)
+    private val resetBT: Button by bindView(R.id.reset_button)
+    private val console: TextView by bindView(R.id.console)
+    private val rbtBF: RadioButton by bindView(R.id.bpm_BF)
+    private val rbt89: RadioButton by bindView(R.id.bpm_89)
+    private val rbt3B: RadioButton by bindView(R.id.bpm_3B)
+    private val rbtCD: RadioButton by bindView(R.id.bpm_CD)
 
     private val presenter by lazy { MessagePresenter() }
-    lateinit var clipboardManager : ClipboardManager
+    private lateinit var clipboardManager : ClipboardManager
 
-    var lastEdit: Long = java.time.Instant.now().toEpochMilli()
-    val songs: ArrayList<File> = ArrayList<File>()
-    var mediaPlayer: MediaPlayer? = null
-    var index = 0
-    var l:Float = 1.0F
-    var r:Float = 1.0F
-    val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
-    val applicationContext: Activity = this
+    private var lastEdit: Long = java.time.Instant.now().toEpochMilli()
+    private val songs: ArrayList<File> = ArrayList()
+    private var mediaPlayer: MediaPlayer? = null
+    private var index = 0
+    private var l:Float = 1.0F
+    private var r:Float = 1.0F
+    private val addresses = mutableListOf("38:3B:26:EC:64:BF","38:3B:26:EC:64:89","38:3B:26:EC:64:3B","38:3B:26:EC:64:CD")
+    private val applicationContext: Activity = this
 
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -117,17 +116,17 @@ class MessageActivity : AppCompatActivity() {
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        bmp_BF.setTag(addresses[0])
-        bmp_89.setTag(addresses[1])
-        bmp_3B.setTag(addresses[2])
-        bmp_CD.setTag(addresses[3])
-        send_BF.setTag(bmp_BF)
-        send_89.setTag(bmp_89)
-        send_3B.setTag(bmp_3B)
-        send_CD.setTag(bmp_CD)
+        rbtBF.tag = addresses[0]
+        rbt89.tag = addresses[1]
+        rbt3B.tag = addresses[2]
+        rbtCD.tag = addresses[3]
+        sendBF.tag = rbtBF
+        send89.tag = rbt89
+        send3B.tag = rbt3B
+        sendCD.tag = rbtCD
 
         checkPermissions()
-        if (songs.count() > 0) {
+        if (songs.isNotEmpty()) {
             songTitle.setSelection(index)
 
             songTitle.adapter = ArrayAdapter<String>(this, spinnerItem, songs.map { it.nameWithoutExtension  })
@@ -142,10 +141,10 @@ class MessageActivity : AppCompatActivity() {
         }
 
         clear.setOnClickListener {
-            send_BF.isEnabled = true
-            send_89.isEnabled = true
-            send_3B.isEnabled = true
-            send_CD.isEnabled = true
+            sendBF.isEnabled = true
+            send89.isEnabled = true
+            send3B.isEnabled = true
+            sendCD.isEnabled = true
             content.setText("")
             Metronome.stop()
         }
@@ -156,8 +155,8 @@ class MessageActivity : AppCompatActivity() {
                 content.setText(clipboardManager.primaryClip?.getItemAt(0)?.text)
             }
             var textToSend = content.text.trim().toString()
-            val rb = view.getTag() as RadioButton
-            if (!rb.isChecked())
+            val rb = view.tag as RadioButton
+            if (!rb.isChecked)
             {//trim bpm
                 textToSend = textToSend.split("_").last()
             }
@@ -172,12 +171,12 @@ class MessageActivity : AppCompatActivity() {
             presenter.sendSingleMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, view as Button, console)
         }
 
-        send_BF.setOnClickListener(commonCLickListener)
-        send_89.setOnClickListener(commonCLickListener)
-        send_3B.setOnClickListener(commonCLickListener)
-        send_CD.setOnClickListener(commonCLickListener)
+        sendBF.setOnClickListener(commonCLickListener)
+        send89.setOnClickListener(commonCLickListener)
+        send3B.setOnClickListener(commonCLickListener)
+        sendCD.setOnClickListener(commonCLickListener)
 
-        play_bt.setOnClickListener {
+        playBT.setOnClickListener {
             if (mediaPlayer != null) {
                 mediaPlayer!!.stop()
             }
@@ -194,9 +193,9 @@ class MessageActivity : AppCompatActivity() {
                 start()
             }
         }
-        pause_bt.setOnClickListener {
+        pauseBT.setOnClickListener {
             if (mediaPlayer != null) {
-                if (mediaPlayer!!.isPlaying())
+                if (mediaPlayer!!.isPlaying)
                 {
                     mediaPlayer!!.pause()
                 }
@@ -206,7 +205,7 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         }
-        stop_bt.setOnClickListener {
+        stopBT.setOnClickListener {
             val mp = mediaPlayer
             if (mp != null) {
                 mp.setVolume(l, r)
@@ -230,26 +229,26 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-        prev_bt.setOnClickListener {
+        prevBT.setOnClickListener {
             if (index > 0)
             {
                 index -= 1
             }
-            if (songs.count() > 0) {
+            if (songs.isNotEmpty()) {
                 songTitle.setSelection(index)
             }
         }
-        next_bt.setOnClickListener {
+        nextBT.setOnClickListener {
             if (index < songs.count()-1)
             {
                 index += 1
             }
-            if (songs.count() > 0) {
+            if (songs.isNotEmpty()) {
                 songTitle.setSelection(index)
             }
         }
 
-        fadeL_bt.setOnClickListener {
+        fadeLBT.setOnClickListener {
             val mp = mediaPlayer
             if (mp != null) {
                 mp.setVolume(l, r)
@@ -264,7 +263,7 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         }
-        fadeR_bt.setOnClickListener {
+        fadeRBT.setOnClickListener {
             val mp = mediaPlayer
             if (mp != null) {
 
@@ -281,7 +280,7 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-        reset_bt.setOnClickListener {
+        resetBT.setOnClickListener {
             l = 1.0F
             r = 1.0F
             if (mediaPlayer != null) {
@@ -304,14 +303,14 @@ class MessageActivity : AppCompatActivity() {
                 val timeout: Long = 3000
                 val epochNow: Long = java.time.Instant.now().toEpochMilli()
                 val timeDiff = epochNow - lastEdit
-                if (!content.text.isEmpty() && timeDiff > 1500) {
+                if (content.text.isNotEmpty() && timeDiff > 1500) {
                     var textToSend = content.text.trim().toString()
                     if (textToSend.contains("_"))
                     {//trim bpm
                         textToSend = textToSend.split("_").last()
                     }
                     this.runOnUiThread{
-                        presenter.sendMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, timeout)
+                        presenter.sendMessage(this, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, addresses, timeout)
                     }
                     Thread.sleep(timeout)
                 }
@@ -324,56 +323,75 @@ class MessageActivity : AppCompatActivity() {
 
         // launch new coroutine in background and continue
         GlobalScope.launch {
-            main_coroutine()
+            mainCoroutine()
         }
     }
 
-    suspend fun main_coroutine() = coroutineScope {
+    private suspend fun mainCoroutine() = coroutineScope {
         withContext(Dispatchers.IO) {
-            val delay_amount = 1000L
+            val delayAmount = 1000L
             val scanhelperTimeout: Long = 3000
             while(true){//with a while(true) loop inside
                 val epochNow: Long = java.time.Instant.now().toEpochMilli()
                 val timeDiff = epochNow - lastEdit
                 //if text is not empty and not edited recently
-                if (!content.text.isEmpty() && timeDiff > 1000) {
+                if (content.text.isNotEmpty() && timeDiff > 1000) {
                     var textToSend = content.text.trim().toString()
                     //look for bluetooth devices
                     val btscan = launch {
-                        //if bluetooth device is one of the 4 known devices, send text
-                        println(textToSend)
                         if (textToSend.contains("_"))
                         {//trim bpm
                             textToSend = textToSend.split("_").last()
                         }
-                        presenter.sendMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, console, addresses, scanhelperTimeout)
+                        //if bluetooth device is one of the 4 known devices, send text
+                        if (addresses.contains(presenter.foundDevice(scanhelperTimeout)))
+                        {
+                            println(textToSend)
+                            presenter.sendMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, addresses, scanhelperTimeout)
+                        }
                     }
 
                     //try to send text do bt device #1 and wait it to end
                     val bt1 = launch {
                         println("BT1")
-                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_BF, console)
+                        if (!rbtBF.isChecked)
+                        {//trim bpm
+                            textToSend = textToSend.split("_").last()
+                        }
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, sendBF, console)
                         delay(500L)
                     }
                     bt1.join()
                     //try to send text do bt device #2 and wait it to end
                     val bt2 = launch {
                         println("BT2")
-                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_89, console)
+                        if (!rbt89.isChecked)
+                        {//trim bpm
+                            textToSend = textToSend.split("_").last()
+                        }
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send89, console)
                         delay(500L)
                     }
                     bt2.join()
                     //try to send text do bt device #3 and wait it to end
                     val bt3 = launch {
                         println("BT3")
-                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_3B, console)
+                        if (!rbt3B.isChecked)
+                        {//trim bpm
+                            textToSend = textToSend.split("_").last()
+                        }
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send3B, console)
                         delay(500L)
                     }
                     bt3.join()
                     //try to send text do bt device #4 and wait it to end
                     val bt4 = launch {
                         println("BT4")
-                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, send_CD, console)
+                        if (!rbtCD.isChecked)
+                        {//trim bpm
+                            textToSend = textToSend.split("_").last()
+                        }
+                        presenter.sendSingleMessage(applicationContext, convertToDeviceDataModel(textToSend), wait.selectedItem as Long, sendCD, console)
                         delay(500L)
                     }
                     bt4.join()
@@ -386,7 +404,7 @@ class MessageActivity : AppCompatActivity() {
                 {
                     println("No text to send")
                     //delay
-                    delay(delay_amount)
+                    delay(delayAmount)
                 }
             }
         }
@@ -414,7 +432,7 @@ class MessageActivity : AppCompatActivity() {
             finish()
             return
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
