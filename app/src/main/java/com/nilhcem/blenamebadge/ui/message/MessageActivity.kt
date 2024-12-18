@@ -73,7 +73,7 @@ class MessageActivity : AppCompatActivity() {
     lateinit var clipboardManager : ClipboardManager
 
     var lastEdit: Long = java.time.Instant.now().toEpochMilli()
-    val loop: ArrayList<File> = ArrayList<File>()
+    val songs: ArrayList<File> = ArrayList<File>()
     var mediaPlayer: MediaPlayer? = null
     var index = 0
     var l:Float = 1.0F
@@ -95,7 +95,7 @@ class MessageActivity : AppCompatActivity() {
         val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         if (downloadsFolder != null && downloadsFolder.exists()) {
             val files = downloadsFolder.listFiles()
-            loop.addAll(files)
+            songs.addAll(files)
         } else {
             // Downloads folder not found
             // Handle accordingly
@@ -112,6 +112,7 @@ class MessageActivity : AppCompatActivity() {
         speed.setSelection(7)//speed8
         wait.adapter = ArrayAdapter<Long>(this, spinnerItem, arrayOf(0L, 10L, 20L, 30L, 40L, 50L, 100L))
         wait.setSelection(0)//sleep
+        content.setText("")
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -125,10 +126,10 @@ class MessageActivity : AppCompatActivity() {
         send_CD.setTag(bmp_CD)
 
         checkPermissions()
-        if (loop.count() > 0) {
+        if (songs.count() > 0) {
             songTitle.setSelection(index)
 
-            songTitle.adapter = ArrayAdapter<String>(this, spinnerItem, loop.map { it.nameWithoutExtension  })
+            songTitle.adapter = ArrayAdapter<String>(this, spinnerItem, songs.map { it.nameWithoutExtension  })
             songTitle.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
@@ -187,7 +188,7 @@ class MessageActivity : AppCompatActivity() {
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                setDataSource(applicationContext, Uri.fromFile(loop[index]))
+                setDataSource(applicationContext, Uri.fromFile(songs[index]))
                 setVolume(l, r)
                 prepare()
                 start()
@@ -234,16 +235,16 @@ class MessageActivity : AppCompatActivity() {
             {
                 index -= 1
             }
-            if (loop.count() > 0) {
+            if (songs.count() > 0) {
                 songTitle.setSelection(index)
             }
         }
         next_bt.setOnClickListener {
-            if (index < loop.count()-1)
+            if (index < songs.count()-1)
             {
                 index += 1
             }
-            if (loop.count() > 0) {
+            if (songs.count() > 0) {
                 songTitle.setSelection(index)
             }
         }
@@ -299,7 +300,7 @@ class MessageActivity : AppCompatActivity() {
         })
 
         thread(name = "always_looping") {
-            while (true) {
+            while (false) {
                 val timeout: Long = 3000
                 val epochNow: Long = java.time.Instant.now().toEpochMilli()
                 val timeDiff = epochNow - lastEdit
@@ -321,25 +322,36 @@ class MessageActivity : AppCompatActivity() {
             }
         }
 
-        thread(name = "sirol_loop") {
-            while (true) {
-                corout()
-                val loop_frequence: Long = 1000
-                //try sending data on  bluetooth device #1
-                //try sending data on  bluetooth device #2
-                //try sending data on  bluetooth device #3
-                //try sending data on  bluetooth device #4
-                Thread.sleep(loop_frequence)
-            }
+        // launch new coroutine in background and continue
+        GlobalScope.launch {
+            main_coroutine()
         }
     }
 
-    fun corout() = runBlocking { // this: CoroutineScope
-        launch { // launch a new coroutine and continue
-            delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
-            println("World!") // print after delay
+    suspend fun main_coroutine() = coroutineScope {
+        withContext(Dispatchers.IO) {
+            val delay_amount = 500L
+            while(true){//with a while(true) loop inside
+                //if text is not empty and not edited recently
+                if (!content.text.isEmpty()) {
+                    val job = launch { // launch a new coroutine and keep a reference to its Job
+                        delay(1000L)
+                        println("World")
+                    }
+                    println("Hello")
+                    job.join() // wait until child coroutine completes
+                    println("Done")
+                    //look for bluetooth devices
+                    //if bluetooth device is one of the 4 known devices, send text
+                    //try to send text do bt device #1 and wait it to end
+                    //try to send text do bt device #2 and wait it to end
+                    //try to send text do bt device #3 and wait it to end
+                    //try to send text do bt device #4 and wait it to end
+                    //delay
+                    delay(delay_amount)
+                }
+            }
         }
-        println("Hello") // main coroutine continues while a previous one is delayed
     }
 
     override fun onResume() {
