@@ -330,26 +330,47 @@ class MessageActivity : AppCompatActivity() {
 
     suspend fun main_coroutine() = coroutineScope {
         withContext(Dispatchers.IO) {
-            val delay_amount = 500L
+            val delay_amount = 1000L
             while(true){//with a while(true) loop inside
+                val epochNow: Long = java.time.Instant.now().toEpochMilli()
+                val timeDiff = epochNow - lastEdit
                 //if text is not empty and not edited recently
-                if (!content.text.isEmpty()) {
-                    val job = launch { // launch a new coroutine and keep a reference to its Job
-                        delay(1000L)
-                        println("World")
-                    }
-                    println("Hello")
-                    job.join() // wait until child coroutine completes
-                    println("Done")
+                if (!content.text.isEmpty() && timeDiff > 1000) {
                     //look for bluetooth devices
-                    //if bluetooth device is one of the 4 known devices, send text
+                    val btscan = launch {
+                        //if bluetooth device is one of the 4 known devices, send text
+                    }
+
                     //try to send text do bt device #1 and wait it to end
+                    val bt1 = launch {
+                        println("BT1")
+                        delay(500L)
+                    }
+                    bt1.join()
                     //try to send text do bt device #2 and wait it to end
+                    val bt2 = launch {
+                        println("BT2")
+                        delay(500L)
+                    }
+                    bt2.join()
                     //try to send text do bt device #3 and wait it to end
+                    val bt3 = launch {
+                        println("BT3")
+                        delay(500L)
+                    }
+                    bt3.join()
                     //try to send text do bt device #4 and wait it to end
-                    //delay
-                    delay(delay_amount)
+                    val bt4 = launch {
+                        println("BT4")
+                        delay(500L)
+                    }
+                    bt4.join()
+                    println("Tried to send all 4 messages")
+                    btscan.cancelAndJoin()
+                    println("Done")
                 }
+                //delay
+                delay(delay_amount)
             }
         }
     }
