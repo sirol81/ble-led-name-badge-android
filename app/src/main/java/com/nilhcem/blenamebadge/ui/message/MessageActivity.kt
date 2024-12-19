@@ -305,7 +305,8 @@ class MessageActivity : AppCompatActivity() {
 
     private suspend fun mainCoroutine() = coroutineScope {
         withContext(Dispatchers.IO) {
-            val delayAmount = 1000L
+            val delayAmount = 2000L
+            val partialDelay = 100L
             while(true){//with a while(true) loop inside
                 val epochNow: Long = java.time.Instant.now().toEpochMilli()
                 val timeDiff = epochNow - lastEdit
@@ -313,30 +314,38 @@ class MessageActivity : AppCompatActivity() {
                 if (content.text.isNotEmpty() && timeDiff > 1000) {
                     //try to send text do bt device #1 and wait it to end
                     val bt1 = launch {
+                        println("enter 1")
                         val dataToSend: DataToSend = if (rbtBF.isChecked) convertToDeviceDataModel(content.text.trim().toString()) else convertToDeviceDataModel(content.text.trim().toString().split("_").last())
                         presenter.sendSingleMessage(applicationContext, dataToSend, wait.selectedItem as Long, sendBF)
-                        delay(100L)
+                        delay(partialDelay)
+                        println("exit 1")
                     }
                     bt1.join()
                     //try to send text do bt device #2 and wait it to end
                     val bt2 = launch {
+                        println("enter 2")
                         val dataToSend: DataToSend = if (rbt89.isChecked) convertToDeviceDataModel(content.text.trim().toString()) else convertToDeviceDataModel(content.text.trim().toString().split("_").last())
                         presenter.sendSingleMessage(applicationContext, dataToSend, wait.selectedItem as Long, send89)
-                        delay(100L)
+                        delay(partialDelay)
+                        println("exit 2")
                     }
                     bt2.join()
                     //try to send text do bt device #3 and wait it to end
                     val bt3 = launch {
+                        println("enter 3")
                         val dataToSend: DataToSend = if (rbt3B.isChecked) convertToDeviceDataModel(content.text.trim().toString()) else convertToDeviceDataModel(content.text.trim().toString().split("_").last())
                         presenter.sendSingleMessage(applicationContext, dataToSend, wait.selectedItem as Long, send3B)
-                        delay(100L)
+                        delay(partialDelay)
+                        println("exit 3")
                     }
                     bt3.join()
                     //try to send text do bt device #4 and wait it to end
                     val bt4 = launch {
+                        println("enter 4")
                         val dataToSend: DataToSend = if (rbtCD.isChecked) convertToDeviceDataModel(content.text.trim().toString()) else convertToDeviceDataModel(content.text.trim().toString().split("_").last())
                         presenter.sendSingleMessage(applicationContext, dataToSend, wait.selectedItem as Long, sendCD)
-                        delay(100L)
+                        delay(partialDelay)
+                        println("exit 4")
                     }
                     bt4.join()
                 }

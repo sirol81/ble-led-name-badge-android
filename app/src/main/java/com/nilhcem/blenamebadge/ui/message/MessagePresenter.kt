@@ -11,7 +11,6 @@ class MessagePresenter {
     private var gattClient = GattClient()
 
     fun sendSingleMessage(context: Context, dataToSend: DataToSend, sleep_time: Long, button: Button) {
-        //Timber.i { "About to send data: $dataToSend" }
         val byteData = DataToByteArrayConverter.convert(dataToSend)
         val rb = button.getTag() as RadioButton
         sendBT(context, byteData, sleep_time, rb.getTag().toString())
@@ -26,7 +25,7 @@ class MessagePresenter {
         gattClient.startClient(context, deviceaddress, sleep) { onConnected ->
             if (onConnected) {
                 gattClient.writeDataStart(byteData) {
-                    gattClient.stopClient()
+                    //gattClient.stopClient()
                 }
             }
         }
